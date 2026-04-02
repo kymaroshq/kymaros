@@ -1,0 +1,114 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - persistentvolumeclaims
+  - pods
+  - secrets
+  - services
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - limitranges
+  - resourcequotas
+  verbs:
+  - create
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods/exec
+  verbs:
+  - create
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - networking.k8s.io
+  resources:
+  - networkpolicies
+  verbs:
+  - create
+  - delete
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - healthcheckpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restorereports
+  - restoretests
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restorereports/status
+  - restoretests/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restoretests/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - velero.io
+  resources:
+  - backups
+  - schedules
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - velero.io
+  resources:
+  - restores
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - watch

@@ -1,0 +1,84 @@
+{{- if .Values.ingress.enabled -}}
+{{- $dashboardHost := .Values.ingress.dashboard.host -}}
+{{- $apiHost := .Values.ingress.api.host -}}
+{{- if .Values.dashboard.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "kymaros.fullname" . }}-dashboard
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kymaros.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.dashboard.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ $dashboardHost | quote }}
+      secretName: {{ .Values.ingress.dashboard.tls.secretName | default (printf "%s-dashboard-tls" (include "kymaros.fullname" .)) }}
+  {{- end }}
+  rules:
+    - host: {{ $dashboardHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "kymaros.fullname" . }}-dashboard
+                port:
+                  number: 80
+          {{- if and .Values.api.enabled (eq $apiHost "") }}
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "kymaros.fullname" . }}-api
+                port:
+                  number: {{ .Values.api.port }}
+          {{- end }}
+{{- end }}
+{{- if and .Values.api.enabled $apiHost }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "kymaros.fullname" . }}-api
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kymaros.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.api.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ $apiHost | quote }}
+      secretName: {{ .Values.ingress.api.tls.secretName | default (printf "%s-api-tls" (include "kymaros.fullname" .)) }}
+  {{- end }}
+  rules:
+    - host: {{ $apiHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "kymaros.fullname" . }}-api
+                port:
+                  number: {{ .Values.api.port }}
+{{- end }}
+{{- end }}

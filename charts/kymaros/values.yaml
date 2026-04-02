@@ -1,0 +1,301 @@
+# ============================================================================
+# Kymaros Helm Chart Values
+# ============================================================================
+# Kubernetes Operator for continuous backup restore validation.
+# Full documentation: https://kymaros.io/docs
+# ============================================================================
+
+# -- Override the chart name used in resource names.
+nameOverride: ""
+# -- Override the full release name used in resource names.
+fullnameOverride: ""
+
+# -- Global settings applied across all components.
+global:
+  # -- Image pull policy applied to all components (can be overridden per component).
+  imagePullPolicy: IfNotPresent
+  # -- List of image pull secret names.
+  imagePullSecrets: []
+  # - name: my-registry-secret
+
+# ============================================================================
+# Controller (Go Operator)
+# ============================================================================
+controller:
+  # -- Controller image configuration.
+  image:
+    repository: ghcr.io/kymaroshq/kymaros
+    # -- Image tag. Defaults to Chart.appVersion when empty.
+    tag: "v0.5.1"
+  # -- Number of controller replicas. Only 1 is active when leaderElection is enabled.
+  replicas: 1
+  # -- Resource requests and limits for the controller container.
+  resources:
+    limits:
+      cpu: 500m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+  # -- Leader election configuration.
+  leaderElection:
+    # -- Enable leader election (required for multi-replica setups).
+    enabled: true
+  # -- Additional arguments passed to the controller binary.
+  extraArgs: []
+  # -- Node selector for controller pod scheduling.
+  nodeSelector: {}
+  # -- Tolerations for controller pod scheduling.
+  tolerations: []
+  # -- Affinity rules for controller pod scheduling.
+  affinity: {}
+  # -- Pod annotations for the controller.
+  podAnnotations: {}
+
+# ============================================================================
+# API Server (Go REST API)
+# ============================================================================
+api:
+  # -- Enable the API server deployment.
+  enabled: true
+  # -- API server image configuration.
+  image:
+    repository: ghcr.io/kymaroshq/kymaros-api
+    # -- Image tag. Defaults to Chart.appVersion when empty.
+    tag: "v0.5.0"
+  # -- Number of API server replicas.
+  replicas: 1
+  # -- Port the API server listens on.
+  port: 8080
+  # -- Resource requests and limits for the API server container.
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  # -- Additional arguments passed to the API server binary.
+  extraArgs: []
+  # -- Node selector for API server pod scheduling.
+  nodeSelector: {}
+  # -- Tolerations for API server pod scheduling.
+  tolerations: []
+  # -- Affinity rules for API server pod scheduling.
+  affinity: {}
+  # -- Pod annotations for the API server.
+  podAnnotations: {}
+
+# ============================================================================
+# Dashboard (React Frontend served by nginx)
+# ============================================================================
+dashboard:
+  # -- Enable the dashboard deployment.
+  enabled: true
+  # -- Dashboard image configuration.
+  image:
+    repository: ghcr.io/kymaroshq/kymaros-frontend
+    # -- Image tag. Defaults to Chart.appVersion when empty.
+    tag: "v0.4.0"
+  # -- Number of dashboard replicas.
+  replicas: 1
+  # -- Port nginx listens on inside the container.
+  port: 8080
+  # -- Resource requests and limits for the dashboard container.
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+  # -- Node selector for dashboard pod scheduling.
+  nodeSelector: {}
+  # -- Tolerations for dashboard pod scheduling.
+  tolerations: []
+  # -- Affinity rules for dashboard pod scheduling.
+  affinity: {}
+  # -- Pod annotations for the dashboard.
+  podAnnotations: {}
+
+# ============================================================================
+# Ingress
+# ============================================================================
+ingress:
+  # -- Enable ingress resources.
+  enabled: false
+  # -- Ingress class name (e.g. nginx, traefik).
+  className: nginx
+  # -- Annotations applied to all ingress resources.
+  annotations: {}
+  # cert-manager.io/cluster-issuer: letsencrypt-prod
+  # -- Dashboard ingress configuration.
+  dashboard:
+    # -- Hostname for the dashboard.
+    host: kymaros.example.com
+    # -- TLS configuration for the dashboard ingress.
+    tls:
+      enabled: false
+      # -- Name of the TLS secret. Auto-generated if empty.
+      secretName: ""
+  # -- API server ingress configuration.
+  api:
+    # -- Hostname for the API server. Leave empty to share dashboard host with /api prefix.
+    host: ""
+    # -- TLS configuration for the API ingress.
+    tls:
+      enabled: false
+      secretName: ""
+
+# ============================================================================
+# Service Accounts
+# ============================================================================
+serviceAccount:
+  # -- Create the controller service account.
+  create: true
+  # -- Override the controller service account name. Auto-generated when empty.
+  name: ""
+  # -- Annotations to add to the controller service account (e.g. for IRSA/Workload Identity).
+  annotations: {}
+  # eks.amazonaws.com/role-arn: arn:aws:iam::123456789:role/kymaros-controller
+
+# -- API server service account configuration.
+serviceAccountApi:
+  # -- Create the API service account.
+  create: true
+  # -- Override the API service account name. Auto-generated when empty.
+  name: ""
+  # -- Annotations to add to the API service account.
+  annotations: {}
+
+# ============================================================================
+# RBAC
+# ============================================================================
+rbac:
+  # -- Create RBAC resources (ClusterRoles, ClusterRoleBindings, Roles, RoleBindings).
+  create: true
+  # -- Allow the controller to exec into pods (required for exec health checks).
+  # -- Set to false to disable the pods/exec ClusterRole rule if not needed.
+  allowExec: true
+
+# ============================================================================
+# Sandbox Configuration (defaults for RestoreTest resources)
+# ============================================================================
+sandbox:
+  # -- Default namespace prefix for sandbox namespaces.
+  namespacePrefix: "rp-test"
+  # -- Default TTL before forced sandbox cleanup.
+  defaultTTL: "30m"
+  # -- Default resource quota applied to sandbox namespaces.
+  defaultQuota:
+    cpu: "2"
+    memory: "4Gi"
+    storage: "10Gi"
+    pods: "20"
+  # -- Default network isolation mode: strict (deny-all) or group (allow intra-group).
+  networkIsolation: strict
+  # -- Automatically clean up sandbox namespaces after test completion.
+  cleanup: true
+
+# ============================================================================
+# Backup Adapters
+# ============================================================================
+adapters:
+  velero:
+    # -- Enable Velero adapter.
+    enabled: true
+    # -- Namespace where Velero is installed.
+    namespace: velero
+  kasten:
+    # -- Enable Kasten K10 adapter (not yet implemented).
+    enabled: false
+    namespace: kasten-io
+  trilio:
+    # -- Enable Trilio adapter (not yet implemented).
+    enabled: false
+    namespace: trilio-system
+
+# ============================================================================
+# Notifications
+# ============================================================================
+notifications:
+  slack:
+    # -- Enable Slack notifications.
+    enabled: false
+    # -- Name of the Secret containing the Slack webhook URL (key: url).
+    webhookSecretRef: ""
+    # -- Default Slack channel for notifications.
+    defaultChannel: "#alerts"
+  pagerduty:
+    # -- Enable PagerDuty notifications.
+    enabled: false
+    # -- Name of the Secret containing the PagerDuty integration key (key: integrationKey).
+    secretRef: ""
+  webhook:
+    # -- Enable generic webhook notifications.
+    enabled: false
+    # -- Name of the Secret containing the webhook URL (key: url).
+    webhookSecretRef: ""
+
+# ============================================================================
+# Metrics and Observability
+# ============================================================================
+metrics:
+  # -- Enable the metrics endpoint on the controller.
+  enabled: true
+  # -- Port for the metrics endpoint (HTTPS).
+  port: 8443
+
+  serviceMonitor:
+    # -- Create a Prometheus ServiceMonitor resource.
+    enabled: false
+    # -- Additional labels added to the ServiceMonitor (used for Prometheus discovery).
+    additionalLabels: {}
+    # release: prometheus
+    # -- Scrape interval.
+    interval: 30s
+    # -- Scrape timeout.
+    scrapeTimeout: 10s
+    # -- Skip TLS verification for metrics scraping.
+    insecureSkipVerify: true
+
+  prometheusRule:
+    # -- Create a Prometheus PrometheusRule resource with alerting rules.
+    enabled: false
+    # -- Additional labels added to the PrometheusRule.
+    additionalLabels: {}
+    rules:
+      # -- Score threshold below which KymarosRestoreTestFailed fires (0-100).
+      scoreThreshold: 70
+      # -- RTO threshold in seconds above which KymarosRTOExceedsSLA fires.
+      rtoThresholdSeconds: 900
+      # -- Hours without a completed test before KymarosRestoreTestNotRun fires.
+      notRunHoursThreshold: 25
+
+  grafanaDashboard:
+    # -- Create a ConfigMap with a Grafana dashboard JSON.
+    enabled: false
+    # -- Labels applied to the ConfigMap (used for Grafana sidecar discovery).
+    labels:
+      grafana_dashboard: "1"
+    # -- Namespace where the dashboard ConfigMap is created. Defaults to release namespace.
+    namespace: ""
+
+# ============================================================================
+# SLA Defaults
+# ============================================================================
+sla:
+  # -- Default RTO target applied when a RestoreTest does not specify one.
+  defaultRTOTarget: "15m"
+  # -- Alert when restore score falls below this threshold.
+  alertScoreThreshold: 70
+  # -- Trigger alert after this many consecutive failures.
+  consecutiveFailureAlert: 3
+
+# ============================================================================
+# License
+# ============================================================================
+license:
+  # -- Name of an existing Secret containing the license key (key: license).
+  # -- Leave empty for Community edition (no license required).
+  existingSecret: ""

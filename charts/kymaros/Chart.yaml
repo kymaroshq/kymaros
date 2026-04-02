@@ -1,0 +1,56 @@
+apiVersion: v2
+name: kymaros
+description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
+type: application
+version: 0.6.0
+appVersion: "0.6.0"
+home: https://kymaros.io
+sources:
+  - https://github.com/kymaroshq/kymaros
+icon: https://kymaros.io/logo.svg
+keywords:
+  - kubernetes
+  - backup
+  - velero
+  - disaster-recovery
+  - restore
+  - validation
+  - operator
+  - compliance
+  - sre
+  - kasten
+  - trilio
+  - helm
+  - prometheus
+  - soc2
+maintainers:
+  - name: kymaroshq
+    url: https://github.com/kymaroshq
+annotations:
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/operator: "true"
+  artifacthub.io/category: security
+  artifacthub.io/operatorCapabilities: Full Lifecycle
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.kymaros.io
+    - name: Website
+      url: https://kymaros.io
+  artifacthub.io/screenshots: |
+    - title: Dashboard Overview
+      url: https://kymaros.io/screenshots/dashboard-overview.png
+    - title: Report Detail
+      url: https://kymaros.io/screenshots/report-detail.png
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial release with Velero adapter
+    - kind: added
+      description: 5 health check types (pod, HTTP, TCP, exec, resource)
+    - kind: added
+      description: 6-level confidence scoring (0-100)
+    - kind: added
+      description: Prometheus metrics and Grafana dashboard
+    - kind: added
+      description: Slack and webhook notifications
+    - kind: added
+      description: React dashboard with real-time visibility

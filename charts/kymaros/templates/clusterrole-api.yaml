@@ -1,0 +1,52 @@
+{{- if and .Values.rbac.create .Values.api.enabled -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kymaros.fullname" . }}-api-reader
+  labels:
+    {{- include "kymaros.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restoretests
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restoretests/status
+  verbs:
+  - get
+  - update
+  - patch
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restorereports
+  - healthcheckpolicies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - restore.kymaros.io
+  resources:
+  - restorereports/status
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  resourceNames:
+  - kymaros-license
+{{- end }}

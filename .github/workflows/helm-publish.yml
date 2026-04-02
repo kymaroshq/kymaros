@@ -1,0 +1,67 @@
+name: Publish Helm Chart
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'charts/kymaros/**'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.15.0
+
+      - name: Lint chart
+        run: helm lint charts/kymaros/
+
+      - name: Update chart version from tag
+        if: github.event_name == 'release'
+        run: |
+          TAG=${GITHUB_REF#refs/tags/v}
+          sed -i "s/^version:.*/version: $TAG/" charts/kymaros/Chart.yaml
+          sed -i "s/^appVersion:.*/appVersion: \"$TAG\"/" charts/kymaros/Chart.yaml
+
+      - name: Package chart
+        run: |
+          mkdir -p .chart-packages
+          helm package charts/kymaros/ -d .chart-packages/
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Update repo index
+        run: |
+          cp .chart-packages/*.tgz gh-pages/
+          helm repo index gh-pages/ --url https://charts.kymaros.io
+
+      - name: Push to gh-pages
+        run: |
+          cd gh-pages
+          git add .
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Update Helm chart $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin gh-pages

@@ -1,0 +1,170 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: healthcheckpolicies.restore.kymaros.io
+spec:
+  group: restore.kymaros.io
+  names:
+    kind: HealthCheckPolicy
+    listKind: HealthCheckPolicyList
+    plural: healthcheckpolicies
+    shortNames:
+    - hcp
+    singular: healthcheckpolicy
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: HealthCheckPolicy is the Schema for the healthcheckpolicies API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: HealthCheckPolicySpec defines the desired state of HealthCheckPolicy
+            properties:
+              checks:
+                items:
+                  description: HealthCheck defines a single health check
+                  properties:
+                    exec:
+                      description: ExecCheck runs a command in a pod
+                      properties:
+                        command:
+                          items:
+                            type: string
+                          type: array
+                        container:
+                          type: string
+                        podSelector:
+                          additionalProperties:
+                            type: string
+                          type: object
+                        successExitCode:
+                          default: 0
+                          type: integer
+                        timeout:
+                          type: string
+                      required:
+                      - command
+                      - podSelector
+                      - successExitCode
+                      type: object
+                    httpGet:
+                      description: HTTPGetCheck performs an HTTP GET health check
+                      properties:
+                        expectedStatus:
+                          type: integer
+                        path:
+                          type: string
+                        port:
+                          type: integer
+                        retries:
+                          type: integer
+                        service:
+                          type: string
+                        timeout:
+                          type: string
+                      required:
+                      - expectedStatus
+                      - path
+                      - port
+                      - service
+                      type: object
+                    name:
+                      description: Name of this check (unique within policy)
+                      type: string
+                    podStatus:
+                      description: PodStatusCheck verifies pod readiness
+                      properties:
+                        labelSelector:
+                          additionalProperties:
+                            type: string
+                          type: object
+                        minReady:
+                          type: integer
+                        timeout:
+                          type: string
+                      required:
+                      - labelSelector
+                      - minReady
+                      type: object
+                    resourceExists:
+                      description: ResourceExistsCheck verifies that K8s resources
+                        exist
+                      properties:
+                        resources:
+                          items:
+                            description: ResourceRef identifies a K8s resource
+                            properties:
+                              kind:
+                                type: string
+                              name:
+                                type: string
+                            required:
+                            - kind
+                            - name
+                            type: object
+                          type: array
+                      required:
+                      - resources
+                      type: object
+                    tcpSocket:
+                      description: TCPSocketCheck verifies TCP connectivity
+                      properties:
+                        port:
+                          type: integer
+                        service:
+                          type: string
+                        timeout:
+                          type: string
+                      required:
+                      - port
+                      - service
+                      type: object
+                    type:
+                      description: 'Type: podStatus | httpGet | exec | tcpSocket |
+                        resourceExists'
+                      enum:
+                      - podStatus
+                      - httpGet
+                      - exec
+                      - tcpSocket
+                      - resourceExists
+                      type: string
+                  required:
+                  - name
+                  - type
+                  type: object
+                type: array
+            required:
+            - checks
+            type: object
+          status:
+            description: HealthCheckPolicyStatus defines the observed state of HealthCheckPolicy.
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

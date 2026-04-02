@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Kymaros navy palette */
+  --color-navy-900: #0c1222;
+  --color-navy-800: #0f172a;
+  --color-navy-700: #1e293b;
+  --color-navy-600: #334155;
+
+  /* Status colors */
+  --color-pass: #10b981;
+  --color-partial: #f59e0b;
+  --color-fail: #ef4444;
+  --color-info: #3b82f6;
+  --color-muted: #64748b;
+
+  /* Fonts */
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body { margin: 0; font-family: var(--font-sans); }
+#root { min-height: 100vh; }

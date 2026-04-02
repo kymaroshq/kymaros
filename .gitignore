@@ -1,0 +1,66 @@
+# Binaries
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build artifacts
+Dockerfile.cross
+
+# Test binary, built with `go test -c`
+*.test
+
+# Coverage
+*.out
+coverage/
+
+# Go workspace file
+go.work
+
+# Kubernetes Generated files - skip generated files, except for vendored files
+!vendor/**/zz_generated.*
+
+# Dependencies
+vendor/
+node_modules/
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Editor and IDE
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# Kubeconfig might contain secrets
+*.kubeconfig
+*-kubeconfig.yaml
+kubeconfig*
+
+# Secrets & certificates
+.env
+.env.*
+*.pem
+*.key
+*.crt
+.signing-key
+
+# Helm
+charts/*/charts/
+charts/*/*.tgz
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# Debug
+__debug_*
