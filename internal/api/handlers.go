@@ -25,7 +25,9 @@ import (
 	"strconv"
 	"strings"
 
+	restorev1alpha1 "github.com/kymaroshq/kymaros/api/v1alpha1"
 	"github.com/kymaroshq/kymaros/internal/adapter"
+	"k8s.io/apimachinery/pkg/types"
 )
 
 // writeJSON marshals v as JSON and writes it to w with the appropriate headers.
@@ -339,6 +341,32 @@ func HandleDeleteTest(q *Queries) http.HandlerFunc {
 func HandleLicense(q *Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, q.GetLicenseResponse())
+	}
+}
+
+// HandleReportLogs returns the pod logs and events from a RestoreReport.
+// GET /api/v1/reports/{name}/logs
+func HandleReportLogs(q *Queries) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		name := r.PathValue("name")
+		if name == "" {
+			writeError(w, http.StatusBadRequest, "name is required")
+			return
+		}
+
+		var report restorev1alpha1.RestoreReport
+		if err := q.client.Get(r.Context(), types.NamespacedName{
+			Name:      name,
+			Namespace: kymarosNamespace,
+		}, &report); err != nil {
+			writeError(w, http.StatusNotFound, "report not found")
+			return
+		}
+
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"podLogs": report.Status.PodLogs,
+			"events":  report.Status.Events,
+		})
 	}
 }
 

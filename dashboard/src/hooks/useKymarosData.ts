@@ -8,6 +8,7 @@ import type {
   Alert,
   ComplianceResponse,
   UpcomingTest,
+  ReportLogsResponse,
 } from '../types/kymaros';
 import type { LicenseResponse } from '../types/license';
 
@@ -127,6 +128,10 @@ export function useCompliance(framework: string, period: string): ApiState<Compl
 
 export function useUpcoming(): ApiState<UpcomingTest[]> {
   return useApiData(() => kymarosApi.getUpcoming(), 60_000);
+}
+
+export function useReportLogs(reportName: string): ApiState<ReportLogsResponse> {
+  return useApiData(() => kymarosApi.getReportLogs(reportName), 0, [reportName]);
 }
 
 export function useLicense(): ApiState<LicenseResponse> {

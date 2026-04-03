@@ -34,6 +34,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	"k8s.io/client-go/kubernetes"
+
 	restorev1alpha1 "github.com/kymaroshq/kymaros/api/v1alpha1"
 	"github.com/kymaroshq/kymaros/internal/adapter"
 	"github.com/kymaroshq/kymaros/internal/healthcheck"
@@ -54,8 +56,9 @@ type RestoreTestReconciler struct {
 	client.Client
 	Scheme         *runtime.Scheme
 	Sandbox        *sandbox.Manager
-	RestoreTimeout time.Duration // max wait for Velero restore (default 5min)
-	PodWaitTimeout time.Duration // max wait for pods ready (default 2min)
+	Clientset      kubernetes.Interface // needed for streaming pod logs
+	RestoreTimeout time.Duration        // max wait for Velero restore (default 5min)
+	PodWaitTimeout time.Duration        // max wait for pods ready (default 2min)
 }
 
 func (r *RestoreTestReconciler) restoreTimeout() time.Duration {
@@ -80,7 +83,9 @@ func (r *RestoreTestReconciler) podWaitTimeout() time.Duration {
 // +kubebuilder:rbac:groups=restore.kymaros.io,resources=restorereports/status,verbs=get;update;patch
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch;create;delete
 // +kubebuilder:rbac:groups="",resources=pods,verbs=get;list;watch
+// +kubebuilder:rbac:groups="",resources=pods/log,verbs=get
 // +kubebuilder:rbac:groups="",resources=pods/exec,verbs=create
+// +kubebuilder:rbac:groups="",resources=events,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=services,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=secrets;configmaps,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=resourcequotas;limitranges,verbs=create;delete
@@ -383,6 +388,33 @@ func (r *RestoreTestReconciler) scoreAndReport(ctx context.Context, test *restor
 
 	// Detect regressions and send notifications
 	r.detectAndNotify(ctx, test, vr.score, vr.result, reportName, logger)
+
+	// Collect pod logs and events BEFORE cleanup (sandbox is still alive)
+	logCfg := test.Spec.LogCollection
+	if logCfg == nil || logCfg.Enabled {
+		if r.Clientset != nil {
+			for _, ns := range sandboxes {
+				podLogs, err := report.CollectPodLogs(ctx, r.Client, r.Clientset, ns, logCfg)
+				if err != nil {
+					logger.WarnContext(ctx, "failed to collect pod logs", "sandbox", ns, "error", err)
+				} else {
+					rr.Status.PodLogs = append(rr.Status.PodLogs, podLogs...)
+				}
+
+				if logCfg == nil || logCfg.IncludeEvents {
+					events, err := report.CollectEvents(ctx, r.Client, ns)
+					if err != nil {
+						logger.WarnContext(ctx, "failed to collect events", "sandbox", ns, "error", err)
+					} else {
+						rr.Status.Events = append(rr.Status.Events, events...)
+					}
+				}
+			}
+			// Enforce size limit to avoid exceeding etcd object size
+			rr.Status.PodLogs = report.TruncateLogs(rr.Status.PodLogs, report.MaxTotalLogBytes)
+			logger.InfoContext(ctx, "pod logs collected", "pods", len(rr.Status.PodLogs), "events", len(rr.Status.Events))
+		}
+	}
 
 	// CRITICAL: Cleanup ALL sandboxes and Velero restores FIRST.
 	for _, ns := range sandboxes {

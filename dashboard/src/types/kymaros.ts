@@ -176,5 +176,35 @@ export interface CreateTestInput {
   alertOnExceed: boolean;
 }
 
+// === Pod Logs ===
+export interface ContainerLog {
+  name: string;
+  type: 'container' | 'init' | 'previous';
+  log: string;
+  truncated: boolean;
+  totalLines?: number;
+}
+
+export interface PodLog {
+  podName: string;
+  namespace: string;
+  phase: string;
+  containers: ContainerLog[];
+}
+
+export interface EventLog {
+  type: string;
+  reason: string;
+  message: string;
+  involvedObject: string;
+  lastTimestamp: string;
+  count?: number;
+}
+
+export interface ReportLogsResponse {
+  podLogs: PodLog[] | null;
+  events: EventLog[] | null;
+}
+
 // Legacy alias
 export type ValidationResult = ValidationLevelResult;

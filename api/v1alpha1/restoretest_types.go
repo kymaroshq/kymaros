@@ -145,6 +145,36 @@ type NotificationChannel struct {
 	WebhookSecretRef string `json:"webhookSecretRef,omitempty"`
 }
 
+// LogCollectionSpec configures pod log collection in the sandbox
+type LogCollectionSpec struct {
+	// Enabled controls whether logs are collected (default: true)
+	// +optional
+	// +kubebuilder:default=true
+	Enabled bool `json:"enabled,omitempty"`
+
+	// MaxLines is the maximum number of log lines per container (default: 100)
+	// +optional
+	// +kubebuilder:default=100
+	// +kubebuilder:validation:Minimum=10
+	// +kubebuilder:validation:Maximum=1000
+	MaxLines int `json:"maxLines,omitempty"`
+
+	// IncludeEvents controls whether K8s events are collected (default: true)
+	// +optional
+	// +kubebuilder:default=true
+	IncludeEvents bool `json:"includeEvents,omitempty"`
+
+	// IncludeInit controls whether init container logs are collected (default: true)
+	// +optional
+	// +kubebuilder:default=true
+	IncludeInit bool `json:"includeInit,omitempty"`
+
+	// IncludePrevious controls whether previous (crashed) container logs are collected (default: true)
+	// +optional
+	// +kubebuilder:default=true
+	IncludePrevious bool `json:"includePrevious,omitempty"`
+}
+
 // RestoreTestSpec defines the desired state of RestoreTest
 type RestoreTestSpec struct {
 	// BackupSource defines which backup to test
@@ -179,6 +209,10 @@ type RestoreTestSpec struct {
 	// +kubebuilder:default=10
 	// +optional
 	HistoryLimit *int32 `json:"historyLimit,omitempty"`
+
+	// LogCollection configures pod log collection in the sandbox
+	// +optional
+	LogCollection *LogCollectionSpec `json:"logCollection,omitempty"`
 }
 
 // RestoreTestStatus defines the observed state of RestoreTest.

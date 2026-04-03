@@ -74,6 +74,7 @@ func (s *Server) Start(ctx context.Context) error {
 	mux.HandleFunc("GET /api/v1/summary/daily", HandleDailyScores(q))
 	mux.HandleFunc("GET /api/v1/tests", HandleTests(q))
 	mux.HandleFunc("GET /api/v1/reports", HandleReports(q))
+	mux.HandleFunc("GET /api/v1/reports/{name}/logs", HandleReportLogs(q))
 	mux.HandleFunc("GET /api/v1/alerts", HandleAlerts(q))
 	mux.HandleFunc("GET /api/v1/compliance", requireTier(s.license, license.TierTeam, HandleCompliance(q)))
 	mux.HandleFunc("GET /api/v1/upcoming", HandleUpcoming(q))

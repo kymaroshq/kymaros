@@ -53,6 +53,58 @@ type RestoreReportStatus struct {
 
 	// Validation levels (layered validation)
 	ValidationLevels ValidationLevels `json:"validationLevels"`
+
+	// PodLogs contains logs from pods in the sandbox namespace
+	// +optional
+	PodLogs []PodLog `json:"podLogs,omitempty"`
+
+	// Events contains Kubernetes events from the sandbox namespace
+	// +optional
+	Events []EventLog `json:"events,omitempty"`
+}
+
+// PodLog captures logs for a single pod in the sandbox
+type PodLog struct {
+	// PodName is the name of the pod
+	PodName string `json:"podName"`
+	// Namespace is the sandbox namespace
+	Namespace string `json:"namespace"`
+	// Phase is the pod phase (Running, Failed, CrashLoopBackOff, etc.)
+	Phase string `json:"phase"`
+	// Containers holds logs per container
+	Containers []ContainerLog `json:"containers"`
+}
+
+// ContainerLog captures log output for a single container
+type ContainerLog struct {
+	// Name of the container
+	Name string `json:"name"`
+	// Type: "container", "init", "previous"
+	Type string `json:"type"`
+	// Log contains the last N lines of log output (truncated to maxLogLines)
+	Log string `json:"log"`
+	// Truncated indicates whether the log was truncated
+	Truncated bool `json:"truncated"`
+	// TotalLines is the number of lines before truncation
+	// +optional
+	TotalLines int `json:"totalLines,omitempty"`
+}
+
+// EventLog captures a single Kubernetes event
+type EventLog struct {
+	// Type: Normal, Warning
+	Type string `json:"type"`
+	// Reason: Failed, FailedScheduling, BackOff, etc.
+	Reason string `json:"reason"`
+	// Message is the event message
+	Message string `json:"message"`
+	// InvolvedObject is the object reference (e.g. Pod/my-pod)
+	InvolvedObject string `json:"involvedObject"`
+	// LastTimestamp is the last time the event occurred
+	LastTimestamp string `json:"lastTimestamp"`
+	// Count is the number of occurrences
+	// +optional
+	Count int `json:"count,omitempty"`
 }
 
 // RTOStatus captures RTO measurement

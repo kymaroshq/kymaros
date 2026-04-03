@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   LineChart,
@@ -22,10 +22,13 @@ import {
   KeyRound,
   FileText,
   Database,
+  ChevronDown,
+  AlertTriangle,
+  Terminal,
 } from 'lucide-react';
-import { useReportsForTest, useTests, useLicense } from '../hooks/useKymarosData';
+import { useReportsForTest, useTests, useLicense, useReportLogs } from '../hooks/useKymarosData';
 import UpgradePrompt from '../components/ui/UpgradePrompt';
-import type { RestoreReport } from '../types/kymaros';
+import type { RestoreReport, PodLog, EventLog } from '../types/kymaros';
 import MetricCard from '../components/ui/MetricCard';
 import StatusBadge from '../components/ui/StatusBadge';
 import ValidationLevelBar from '../components/ui/ValidationLevelBar';
@@ -117,6 +120,116 @@ interface TimelineEvent {
   time: string;
   label: string;
   status: 'done' | 'active' | 'pending';
+}
+
+// ---------------------------------------------------------------------------
+// Pod Logs components
+// ---------------------------------------------------------------------------
+
+function PodLogCard({ pod }: { pod: PodLog }) {
+  const [expanded, setExpanded] = useState(false);
+  const hasErrors = pod.phase === 'Failed' || pod.phase === 'CrashLoopBackOff';
+
+  return (
+    <div
+      className={`mb-2 rounded-lg border ${
+        hasErrors
+          ? 'border-red-500/30 bg-red-500/5'
+          : 'border-navy-700 bg-navy-800/30'
+      }`}
+    >
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        className="flex w-full items-center justify-between p-3 text-left"
+      >
+        <div className="flex items-center gap-2">
+          <span
+            className={`h-2 w-2 rounded-full ${
+              hasErrors
+                ? 'bg-red-400'
+                : pod.phase === 'Running' || pod.phase === 'Succeeded'
+                  ? 'bg-emerald-400'
+                  : 'bg-amber-400'
+            }`}
+          />
+          <span className="font-mono text-sm text-slate-300">{pod.podName}</span>
+          <span className="text-xs text-slate-500">{pod.phase}</span>
+        </div>
+        <ChevronDown
+          className={`h-4 w-4 text-slate-500 transition-transform ${
+            expanded ? 'rotate-180' : ''
+          }`}
+        />
+      </button>
+
+      {expanded &&
+        pod.containers.map((container) => (
+          <div
+            key={`${container.name}-${container.type}`}
+            className="border-t border-navy-700/50 p-3"
+          >
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-xs text-slate-400">{container.name}</span>
+              {container.type !== 'container' && (
+                <span className="rounded bg-navy-700 px-1.5 py-0.5 text-[10px] text-slate-400">
+                  {container.type}
+                </span>
+              )}
+              {container.truncated && (
+                <span className="text-[10px] text-slate-500">
+                  (last {container.totalLines} lines)
+                </span>
+              )}
+            </div>
+            <pre className="max-h-64 overflow-x-auto overflow-y-auto rounded bg-navy-900 p-3 font-mono text-xs leading-relaxed text-slate-300">
+              {container.log || '(no logs)'}
+            </pre>
+          </div>
+        ))}
+    </div>
+  );
+}
+
+function PodLogsSection({ reportName }: { reportName: string }) {
+  const { data, loading } = useReportLogs(reportName);
+
+  if (loading) return <Skeleton className="h-32 w-full rounded-xl" />;
+  if (!data?.podLogs?.length && !data?.events?.length) return null;
+
+  const warningEvents = data.events?.filter((e: EventLog) => e.type === 'Warning') ?? [];
+
+  return (
+    <div className="rounded-xl border border-navy-700 bg-navy-800 p-5">
+      <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-white">
+        <Terminal className="h-5 w-5 text-slate-400" />
+        Pod Logs
+      </h2>
+
+      {warningEvents.length > 0 && (
+        <div className="mb-4 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
+          <p className="mb-2 flex items-center gap-1.5 text-xs font-medium text-amber-400">
+            <AlertTriangle className="h-3.5 w-3.5" />
+            Warning events
+          </p>
+          {warningEvents.map((event: EventLog, i: number) => (
+            <div key={i} className="mb-1 text-xs text-slate-300">
+              <span className="text-amber-400">{event.reason}</span>
+              {' \u2014 '}
+              {event.involvedObject}: {event.message}
+              {(event.count ?? 0) > 1 && (
+                <span className="text-slate-500"> (x{event.count})</span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {data.podLogs?.map((pod: PodLog) => (
+        <PodLogCard key={pod.podName} pod={pod} />
+      ))}
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -473,6 +586,11 @@ function ReportDetail() {
             </table>
           </div>
         </div>
+      )}
+
+      {/* Pod logs */}
+      {latestReport.metadata?.name && (
+        <PodLogsSection reportName={latestReport.metadata.name} />
       )}
 
       {/* Completeness grid */}

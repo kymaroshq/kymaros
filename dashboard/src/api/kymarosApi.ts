@@ -7,6 +7,7 @@ import type {
   ComplianceResponse,
   UpcomingTest,
   CreateTestInput,
+  ReportLogsResponse,
 } from '../types/kymaros';
 import type { LicenseResponse } from '../types/license';
 
@@ -68,6 +69,9 @@ export const kymarosApi = {
 
   getReportsForTest: (name: string, days = 30): Promise<RestoreReport[]> =>
     fetchJSON<RestoreReport[]>(`${API_BASE}/reports?test=${encodeURIComponent(name)}&days=${days}`),
+
+  getReportLogs: (name: string): Promise<ReportLogsResponse> =>
+    fetchJSON<ReportLogsResponse>(`${API_BASE}/reports/${encodeURIComponent(name)}/logs`),
 
   getAlerts: (hours = 48): Promise<Alert[]> =>
     fetchJSON<Alert[]>(`${API_BASE}/alerts?hours=${hours}`),

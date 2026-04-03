@@ -2,8 +2,8 @@ apiVersion: v2
 name: kymaros
 description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
 type: application
-version: 0.6.0
-appVersion: "0.6.0"
+version: 0.6.1
+appVersion: "0.6.1"
 home: https://kymaros.io
 sources:
   - https://github.com/kymaroshq/kymaros
@@ -43,14 +43,12 @@ annotations:
       url: https://kymaros.io/screenshots/report-detail.png
   artifacthub.io/changes: |
     - kind: added
-      description: Initial release with Velero adapter
+      description: Pod logs collection from sandbox namespaces
     - kind: added
-      description: 5 health check types (pod, HTTP, TCP, exec, resource)
+      description: Kubernetes events capture in RestoreReport
     - kind: added
-      description: 6-level confidence scoring (0-100)
+      description: Configurable log collection (maxLines, init, previous containers)
     - kind: added
-      description: Prometheus metrics and Grafana dashboard
+      description: GET /api/v1/reports/{name}/logs endpoint
     - kind: added
-      description: Slack and webhook notifications
-    - kind: added
-      description: React dashboard with real-time visibility
+      description: Pod logs viewer in dashboard with expandable log cards
