@@ -26,7 +26,7 @@ controller:
   image:
     repository: ghcr.io/kymaroshq/kymaros
     # -- Image tag. Defaults to Chart.appVersion when empty.
-    tag: "v0.5.1"
+    tag: "v0.6.0"
   # -- Number of controller replicas. Only 1 is active when leaderElection is enabled.
   replicas: 1
   # -- Resource requests and limits for the controller container.
@@ -62,7 +62,7 @@ api:
   image:
     repository: ghcr.io/kymaroshq/kymaros-api
     # -- Image tag. Defaults to Chart.appVersion when empty.
-    tag: "v0.5.0"
+    tag: "v0.6.0"
   # -- Number of API server replicas.
   replicas: 1
   # -- Port the API server listens on.
@@ -96,7 +96,7 @@ dashboard:
   image:
     repository: ghcr.io/kymaroshq/kymaros-frontend
     # -- Image tag. Defaults to Chart.appVersion when empty.
-    tag: "v0.4.0"
+    tag: "v0.6.0"
   # -- Number of dashboard replicas.
   replicas: 1
   # -- Port nginx listens on inside the container.

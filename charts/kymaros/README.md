@@ -11,10 +11,8 @@ Kubernetes operator for continuous backup restore validation. Kymaros automatica
 ## Quick Install
 
 ```bash
-helm repo add kymaros https://kymaroshq.github.io/kymaros
-helm repo update
-
-helm install kymaros kymaros/kymaros \
+helm install kymaros oci://ghcr.io/kymaroshq/kymaros \
+  --version 0.6.0 \
   --namespace kymaros-system \
   --create-namespace \
   --set ingress.enabled=true \
@@ -31,10 +29,10 @@ helm install kymaros kymaros/kymaros \
 | `controller.leaderElection.enabled` | Enable leader election | `true` |
 | `api.enabled` | Deploy the API server | `true` |
 | `api.image.repository` | API server image repository | `ghcr.io/kymaroshq/kymaros-api` |
-| `api.image.tag` | API server image tag | `v0.5.0` |
+| `api.image.tag` | API server image tag | `v0.6.0` |
 | `dashboard.enabled` | Deploy the React dashboard | `true` |
 | `dashboard.image.repository` | Dashboard image repository | `ghcr.io/kymaroshq/kymaros-frontend` |
-| `dashboard.image.tag` | Dashboard image tag | `v0.4.0` |
+| `dashboard.image.tag` | Dashboard image tag | `v0.6.0` |
 | `ingress.enabled` | Create ingress resources | `false` |
 | `ingress.className` | Ingress class name | `nginx` |
 | `ingress.dashboard.host` | Dashboard hostname | `kymaros.example.com` |

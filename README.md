@@ -51,7 +51,10 @@ The entire test is invisible to your production workloads.
 
 ```bash
 # Install Kymaros
-kubectl apply -f https://github.com/kymaroshq/kymaros/releases/latest/download/install.yaml
+helm install kymaros oci://ghcr.io/kymaroshq/kymaros \
+  --version 0.6.0 \
+  --namespace kymaros-system \
+  --create-namespace
 
 # Create a health check policy
 kubectl apply -f - <<'EOF'
