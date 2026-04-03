@@ -37,6 +37,7 @@ spec:
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
           args:
             - --port={{ .Values.api.port }}
+            - --static-dir={{ .Values.api.staticDir | default "/static" }}
             {{- with .Values.api.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -55,13 +56,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/v1/health
-              port: {{ .Values.api.port }}
+              port: http
             initialDelaySeconds: 5
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /api/v1/health
-              port: {{ .Values.api.port }}
+              port: http
             initialDelaySeconds: 3
             periodSeconds: 10
           resources:

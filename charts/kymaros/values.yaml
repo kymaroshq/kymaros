@@ -67,6 +67,8 @@ api:
   replicas: 1
   # -- Port the API server listens on.
   port: 8080
+  # -- Path to frontend static files inside the container.
+  staticDir: "/static"
   # -- Resource requests and limits for the API server container.
   resources:
     limits:
@@ -86,37 +88,9 @@ api:
   # -- Pod annotations for the API server.
   podAnnotations: {}
 
-# ============================================================================
-# Dashboard (React Frontend served by nginx)
-# ============================================================================
-dashboard:
-  # -- Enable the dashboard deployment.
-  enabled: true
-  # -- Dashboard image configuration.
-  image:
-    repository: ghcr.io/kymaroshq/kymaros-frontend
-    # -- Image tag. Defaults to Chart.appVersion when empty.
-    tag: "v0.6.1"
-  # -- Number of dashboard replicas.
-  replicas: 1
-  # -- Port nginx listens on inside the container.
-  port: 8080
-  # -- Resource requests and limits for the dashboard container.
-  resources:
-    limits:
-      cpu: 100m
-      memory: 64Mi
-    requests:
-      cpu: 10m
-      memory: 32Mi
-  # -- Node selector for dashboard pod scheduling.
-  nodeSelector: {}
-  # -- Tolerations for dashboard pod scheduling.
-  tolerations: []
-  # -- Affinity rules for dashboard pod scheduling.
-  affinity: {}
-  # -- Pod annotations for the dashboard.
-  podAnnotations: {}
+# NOTE: The dashboard (React frontend) is served by the API server binary.
+# Build the kymaros-api image with the frontend dist embedded at /static.
+# There is no separate dashboard deployment.
 
 # ============================================================================
 # Ingress

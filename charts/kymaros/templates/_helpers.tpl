@@ -59,14 +59,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Selector labels for the dashboard.
-*/}}
-{{- define "kymaros.dashboardSelectorLabels" -}}
-app.kubernetes.io/name: {{ include "kymaros.name" . }}-dashboard
-app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
 Controller service account name.
 */}}
 {{- define "kymaros.serviceAccountName" -}}
@@ -102,14 +94,6 @@ API server image reference.
 {{- define "kymaros.apiImage" -}}
 {{- $tag := .Values.api.image.tag | default .Chart.AppVersion }}
 {{- printf "%s:%s" .Values.api.image.repository $tag }}
-{{- end }}
-
-{{/*
-Dashboard image reference.
-*/}}
-{{- define "kymaros.dashboardImage" -}}
-{{- $tag := .Values.dashboard.image.tag | default .Chart.AppVersion }}
-{{- printf "%s:%s" .Values.dashboard.image.repository $tag }}
 {{- end }}
 
 {{/*
