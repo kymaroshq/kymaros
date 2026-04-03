@@ -5,6 +5,66 @@ entries:
       artifacthub.io/category: security
       artifacthub.io/changes: |
         - kind: added
+          description: Pod logs collection from sandbox namespaces
+        - kind: added
+          description: Kubernetes events capture in RestoreReport
+        - kind: added
+          description: Configurable log collection (maxLines, init, previous containers)
+        - kind: added
+          description: GET /api/v1/reports/{name}/logs endpoint
+        - kind: added
+          description: Pod logs viewer in dashboard with expandable log cards
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+    apiVersion: v2
+    appVersion: 0.6.1
+    created: "2026-04-03T23:02:14.026336008Z"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: fc884566616d7ca0ce267e7dab568f5f23d39506c5450c39c16d77acabc124bf
+    home: https://kymaros.io
+    icon: https://kymaros.io/logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - kasten
+    - trilio
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.1.tgz
+    version: 0.6.1
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: added
           description: Initial release with Velero adapter
         - kind: added
           description: 5 health check types (pod, HTTP, TCP, exec, resource)
@@ -31,7 +91,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.0
-    created: "2026-04-03T16:01:35.215998301Z"
+    created: "2026-04-03T23:02:14.025389957Z"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -63,4 +123,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.0.tgz
     version: 0.6.0
-generated: "2026-04-03T16:01:35.214814603Z"
+generated: "2026-04-03T23:02:14.024181247Z"
