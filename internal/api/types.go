@@ -107,11 +107,11 @@ type CreateTestInput struct {
 
 // LicenseResponse for GET /api/v1/license
 type LicenseResponse struct {
-	Tier          string      `json:"tier"`
-	ExpiresAt     string      `json:"expiresAt,omitempty"`
-	TrialEndsAt   string      `json:"trialEndsAt,omitempty"`
-	IsExpired     bool        `json:"isExpired"`
-	IsTrialing    bool        `json:"isTrialing"`
-	TrialDaysLeft *int        `json:"trialDaysLeft,omitempty"`
-	Features      any `json:"features"`
+	Tier          string `json:"tier"`
+	ExpiresAt     string `json:"expiresAt,omitempty"`
+	TrialEndsAt   string `json:"trialEndsAt,omitempty"`
+	IsExpired     bool   `json:"isExpired"`
+	IsTrialing    bool   `json:"isTrialing"`
+	TrialDaysLeft *int   `json:"trialDaysLeft,omitempty"`
+	Features      any    `json:"features"`
 }
