@@ -90,14 +90,14 @@ func makeTest() *restorev1alpha1.RestoreTest {
 	}
 }
 
-func makeBackup(phase string, namespaces []string) *unstructured.Unstructured {
+func makeBackup(phase string, namespaces []string) *unstructured.Unstructured { //nolint:unparam // phase kept for test readability
 	obj := &unstructured.Unstructured{}
 	obj.SetGroupVersionKind(schema.GroupVersionKind{Group: "velero.io", Version: "v1", Kind: "Backup"})
 	obj.SetName(testBackupName)
 	obj.SetNamespace("velero")
 	_ = unstructured.SetNestedField(obj.Object, phase, "status", "phase")
 	if len(namespaces) > 0 {
-		ns := make([]interface{}, len(namespaces))
+		ns := make([]any, len(namespaces))
 		for i, n := range namespaces {
 			ns[i] = n
 		}

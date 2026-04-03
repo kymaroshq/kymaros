@@ -14,7 +14,7 @@ import (
 
 const (
 	DefaultMaxLogLines = 100
-	MaxLogBytes        = 64 * 1024 // 64KB max per container
+	MaxLogBytes        = 64 * 1024  // 64KB max per container
 	MaxTotalLogBytes   = 512 * 1024 // 512KB max for all logs in a report
 )
 
@@ -104,7 +104,7 @@ func getContainerLog(ctx context.Context, clientset kubernetes.Interface, namesp
 	if err != nil {
 		return fmt.Sprintf("[error retrieving logs: %v]", err), false, 0
 	}
-	defer stream.Close()
+	defer stream.Close() //nolint:errcheck // best-effort close on read stream
 
 	bytes, err := io.ReadAll(stream)
 	if err != nil {
@@ -147,7 +147,7 @@ func CollectEvents(ctx context.Context, k8sClient client.Client, namespace strin
 			Reason:         event.Reason,
 			Message:        event.Message,
 			InvolvedObject: fmt.Sprintf("%s/%s", event.InvolvedObject.Kind, event.InvolvedObject.Name),
-			LastTimestamp:   ts,
+			LastTimestamp:  ts,
 			Count:          int(event.Count),
 		})
 	}

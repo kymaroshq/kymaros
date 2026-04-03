@@ -363,7 +363,7 @@ func HandleReportLogs(q *Queries) http.HandlerFunc {
 			return
 		}
 
-		writeJSON(w, http.StatusOK, map[string]interface{}{
+		writeJSON(w, http.StatusOK, map[string]any{
 			"podLogs": report.Status.PodLogs,
 			"events":  report.Status.Events,
 		})

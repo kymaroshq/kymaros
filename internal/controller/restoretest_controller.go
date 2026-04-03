@@ -46,9 +46,9 @@ import (
 )
 
 const (
-	finalizerName   = "kymaros.io/sandbox-cleanup"
-	requeuePoll     = 10 * time.Second
-	backupLatest    = "latest"
+	finalizerName = "kymaros.io/sandbox-cleanup"
+	requeuePoll   = 10 * time.Second
+	backupLatest  = "latest"
 )
 
 // RestoreTestReconciler reconciles a RestoreTest object

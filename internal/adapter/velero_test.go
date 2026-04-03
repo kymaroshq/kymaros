@@ -48,9 +48,9 @@ func makeBackup(name string, createdAt time.Time, phase string, includedNamespac
 	obj.SetNamespace("velero")
 	obj.SetCreationTimestamp(metav1.NewTime(createdAt))
 
-	spec := map[string]interface{}{}
+	spec := map[string]any{}
 	if len(includedNamespaces) > 0 {
-		ns := make([]interface{}, len(includedNamespaces))
+		ns := make([]any, len(includedNamespaces))
 		for i, n := range includedNamespaces {
 			ns[i] = n
 		}
