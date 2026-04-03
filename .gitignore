@@ -54,7 +54,7 @@ kubeconfig*
 
 # Helm
 charts/*/charts/
-charts/*/*.tgz
+*.tgz
 
 # OS
 .DS_Store

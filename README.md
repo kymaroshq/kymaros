@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/kymaroshq/kymaros/actions/workflows/ci.yml"><img src="https://github.com/kymaroshq/kymaros/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
+  <a href="https://github.com/kymaroshq/kymaros/actions/workflows/test.yml"><img src="https://github.com/kymaroshq/kymaros/actions/workflows/test.yml/badge.svg" alt="CI" /></a>
   <a href="https://goreportcard.com/report/github.com/kymaroshq/kymaros"><img src="https://goreportcard.com/badge/github.com/kymaroshq/kymaros" alt="Go Report" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" alt="License" /></a>
   <a href="https://kubernetes.io"><img src="https://img.shields.io/badge/kubernetes-1.28--1.31-326CE5?logo=kubernetes&logoColor=white" alt="Kubernetes" /></a>
