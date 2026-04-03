@@ -12,7 +12,7 @@ import (
 func requireTier(lm *license.LicenseManager, minTier license.Tier, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if !lm.HasTier(minTier) {
-			writeJSON(w, http.StatusForbidden, map[string]interface{}{
+			writeJSON(w, http.StatusForbidden, map[string]any{
 				"error":        fmt.Sprintf("This feature requires Kymaros %s", minTier),
 				"currentTier":  string(lm.Tier()),
 				"requiredTier": string(minTier),

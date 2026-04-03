@@ -113,5 +113,5 @@ type LicenseResponse struct {
 	IsExpired     bool        `json:"isExpired"`
 	IsTrialing    bool        `json:"isTrialing"`
 	TrialDaysLeft *int        `json:"trialDaysLeft,omitempty"`
-	Features      interface{} `json:"features"`
+	Features      any `json:"features"`
 }
