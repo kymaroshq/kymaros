@@ -1,0 +1,66 @@
+apiVersion: v1
+entries:
+  kymaros:
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: added
+          description: Initial release with Velero adapter
+        - kind: added
+          description: 5 health check types (pod, HTTP, TCP, exec, resource)
+        - kind: added
+          description: 6-level confidence scoring (0-100)
+        - kind: added
+          description: Prometheus metrics and Grafana dashboard
+        - kind: added
+          description: Slack and webhook notifications
+        - kind: added
+          description: React dashboard with real-time visibility
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+    apiVersion: v2
+    appVersion: 0.6.0
+    created: "2026-04-03T15:45:28.119768727Z"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: 9971c5434c0df7c0337171dca0dc3cfe4300bf3e54c58a3ce35fc8c36b84f844
+    home: https://kymaros.io
+    icon: https://kymaros.io/logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - kasten
+    - trilio
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.0.tgz
+    version: 0.6.0
+generated: "2026-04-03T15:45:28.118615349Z"
