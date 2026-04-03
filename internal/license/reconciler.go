@@ -7,7 +7,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 )
 
@@ -22,13 +21,10 @@ type LicenseReconciler struct {
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch
 
 func (r *LicenseReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logger := log.FromContext(ctx)
-
 	if req.Name != secretName || req.Namespace != secretNamespace {
 		return ctrl.Result{}, nil
 	}
 
-	logger.Info("license secret changed, refreshing")
 	r.Manager.Refresh(ctx)
 
 	// Re-check hourly to catch expiration transitions.

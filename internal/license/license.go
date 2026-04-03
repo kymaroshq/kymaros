@@ -174,7 +174,7 @@ func LoadFromSecret(ctx context.Context, c client.Client) *License {
 		lic.TrialEndsAt = lic.ExpiresAt
 	}
 
-	slog.Info("license loaded", "tier", lic.Tier, "expires", expiresStr)
+	slog.Debug("license loaded", "tier", lic.Tier, "expires", expiresStr)
 	return lic
 }
 
