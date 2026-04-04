@@ -29,11 +29,11 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.1
-    created: "2026-04-03T23:02:14.026336008Z"
+    created: "2026-04-04T00:11:30.746895881Z"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
-    digest: fc884566616d7ca0ce267e7dab568f5f23d39506c5450c39c16d77acabc124bf
+    digest: d2d0e255c096df958755fe0877b033260e8073591b7dbac107ce0b9daddd28b4
     home: https://kymaros.io
     icon: https://kymaros.io/logo.svg
     keywords:
@@ -46,8 +46,6 @@ entries:
     - operator
     - compliance
     - sre
-    - kasten
-    - trilio
     - helm
     - prometheus
     - soc2
@@ -91,7 +89,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.0
-    created: "2026-04-03T23:02:14.025389957Z"
+    created: "2026-04-04T00:11:30.746022835Z"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -123,4 +121,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.0.tgz
     version: 0.6.0
-generated: "2026-04-03T23:02:14.024181247Z"
+generated: "2026-04-04T00:11:30.744846013Z"
