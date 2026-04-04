@@ -1,0 +1,39 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: HealthCheckPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: kymaros
+    app.kubernetes.io/managed-by: kustomize
+  name: prod-checks
+spec:
+  checks:
+    - name: api-pods-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: api
+        minReady: 2
+        timeout: "5m0s"
+    - name: api-health
+      type: httpGet
+      httpGet:
+        service: api-service
+        port: 8080
+        path: /health
+        expectedStatus: 200
+        timeout: "30s"
+        retries: 3
+    - name: postgres-tcp
+      type: tcpSocket
+      tcpSocket:
+        service: postgres
+        port: 5432
+        timeout: "10s"
+    - name: critical-resources
+      type: resourceExists
+      resourceExists:
+        resources:
+          - kind: Secret
+            name: api-credentials
+          - kind: ConfigMap
+            name: api-config

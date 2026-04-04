@@ -1,0 +1,29 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreTest
+metadata:
+  labels:
+    app.kubernetes.io/name: kymaros
+    app.kubernetes.io/managed-by: kustomize
+  name: velero-prod-nightly
+spec:
+  backupSource:
+    provider: velero
+    backupName: "latest"
+    namespaces:
+      - name: production
+  schedule:
+    cron: "0 3 * * *"
+    timezone: "Europe/Brussels"
+  sandbox:
+    namespacePrefix: "rp-test"
+    ttl: "30m0s"
+    networkIsolation: "strict"
+    resourceQuota:
+      cpu: "4"
+      memory: "8Gi"
+  healthChecks:
+    policyRef: "prod-checks"
+    timeout: "10m0s"
+  sla:
+    maxRTO: "15m0s"
+    alertOnExceed: true
