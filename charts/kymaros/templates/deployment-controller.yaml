@@ -40,6 +40,18 @@ spec:
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
+          env:
+            {{- if .Values.auth.enabled }}
+            - name: KYMAROS_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.auth.existingSecret }}
+                  name: {{ .Values.auth.existingSecret }}
+                  {{- else }}
+                  name: {{ include "kymaros.fullname" . }}-auth
+                  {{- end }}
+                  key: token
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

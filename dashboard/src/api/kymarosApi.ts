@@ -15,6 +15,23 @@ import type {
 
 const API_BASE = '/api/v1';
 
+function getAuthToken(): string | null {
+  return localStorage.getItem('kymaros_api_token');
+}
+
+export function setAuthToken(token: string | null): void {
+  if (token) {
+    localStorage.setItem('kymaros_api_token', token);
+  } else {
+    localStorage.removeItem('kymaros_api_token');
+  }
+}
+
+function authHeaders(): Record<string, string> {
+  const token = getAuthToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 class ApiError extends Error {
   readonly status: number;
   constructor(status: number, message: string) {
@@ -35,7 +52,7 @@ function qs(params?: Record<string, string | number | boolean | undefined>): str
 }
 
 async function fetchJSON<T>(url: string): Promise<T> {
-  const response = await fetch(url);
+  const response = await fetch(url, { headers: authHeaders() });
   if (!response.ok) {
     throw new ApiError(response.status, `API request failed: ${response.statusText}`);
   }
@@ -43,9 +60,11 @@ async function fetchJSON<T>(url: string): Promise<T> {
 }
 
 async function fetchMutate<T>(method: string, url: string, body?: unknown): Promise<T> {
+  const headers: Record<string, string> = { ...authHeaders() };
+  if (body) headers['Content-Type'] = 'application/json';
   const res = await fetch(url, {
     method,
-    headers: body ? { 'Content-Type': 'application/json' } : {},
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) throw new ApiError(res.status, await res.text());

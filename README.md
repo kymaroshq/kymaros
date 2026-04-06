@@ -52,7 +52,7 @@ The entire test is invisible to your production workloads.
 ```bash
 # Install Kymaros
 helm install kymaros oci://ghcr.io/kymaroshq/kymaros \
-  --version 0.6.2 \
+  --version 0.6.3 \
   --namespace kymaros-system \
   --create-namespace
 

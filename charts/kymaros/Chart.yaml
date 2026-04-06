@@ -2,8 +2,8 @@ apiVersion: v2
 name: kymaros
 description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
 type: application
-version: 0.6.2
-appVersion: "0.6.2"
+version: 0.6.3
+appVersion: "0.6.3"
 home: https://kymaros.io
 sources:
   - https://github.com/kymaroshq/kymaros
@@ -41,14 +41,10 @@ annotations:
       url: https://kymaros.io/screenshots/report-detail.png
   artifacthub.io/changes: |
     - kind: added
-      description: Settings page with cluster info, provider status, notifications, sandbox config, metrics
+      description: Bearer token authentication for write API endpoints (POST, PUT, DELETE)
     - kind: added
-      description: Enriched GET /api/v1/health with version, K8s version, uptime, pod name
-    - kind: added
-      description: Five new /api/v1/config/* endpoints (provider, notifications, sandbox, cleanup)
-    - kind: added
-      description: Version injection via ldflags at build time
+      description: Auth Helm values (auth.enabled, auth.token, auth.existingSecret)
     - kind: fixed
-      description: Float display bug in dashboard score delta and chart tooltip
+      description: Score thresholds in README and docs corrected to match code (70/90)
     - kind: fixed
-      description: Binary path /manager to /kymaros in kustomize manifest for e2e tests
+      description: Chart README rewritten to reflect single-binary architecture
