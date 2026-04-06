@@ -99,6 +99,7 @@ func (s *Server) Start(ctx context.Context) error {
 	s.registerStaticHandler(mux)
 
 	var handler http.Handler = mux
+	handler = AuthMiddleware(handler)
 	handler = CORSMiddleware(handler)
 
 	s.httpServer = &http.Server{
