@@ -1,0 +1,6 @@
+## Append samples of your project ##
+resources:
+- restore_v1alpha1_restoretest.yaml
+- restore_v1alpha1_healthcheckpolicy.yaml
+- restore_v1alpha1_restorereport.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
