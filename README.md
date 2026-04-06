@@ -122,7 +122,7 @@ Kymaros validates restores across 6 weighted levels:
 | Cross-namespace deps | 10 | Are inter-namespace dependencies resolved? |
 | RTO compliance | 5 | Is the measured restore time within your SLA target? |
 
-**90+** = your restore works end-to-end. **50-89** = partial issues, investigate. **<50** = something is seriously broken.
+**90+** = pass, your restore works end-to-end. **70-89** = partial, investigate. **<70** = fail, something is seriously broken.
 
 ## Features
 

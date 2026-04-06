@@ -14,8 +14,8 @@ for a fix. We aim to release patches within 7 days of confirmation.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.5.x   | Current release    |
-| < 0.5   | Not supported      |
+| 0.6.x   | Current release    |
+| < 0.6   | Not supported      |
 
 ## Security Model
 
