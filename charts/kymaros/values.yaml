@@ -173,6 +173,18 @@ notifications:
     webhookSecretRef: ""
 
 # ============================================================================
+# Authentication
+# ============================================================================
+auth:
+  # -- Enable bearer token authentication for write endpoints (POST, PUT, DELETE).
+  # Read endpoints (GET) remain open for dashboards and Prometheus.
+  enabled: false
+  # -- Static bearer token. If empty and enabled=true, provide a token via existingSecret.
+  token: ""
+  # -- Name of an existing Secret containing the token (key: token). Overrides auth.token.
+  existingSecret: ""
+
+# ============================================================================
 # Metrics and Observability
 # ============================================================================
 metrics:
