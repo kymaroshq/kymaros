@@ -2,43 +2,28 @@
 
 Kubernetes operator for continuous backup restore validation. Kymaros automatically restores backups into isolated sandbox namespaces, runs configurable health checks, scores each restore on a 0-100 scale across six validation layers, and enforces SLA targets for RTO compliance.
 
-## Components
-
-- **Controller** — Go operator that drives the restore test state machine
-- **API Server** — REST API exposing test results and triggering ad-hoc runs
-- **Dashboard** — React frontend for real-time visibility and compliance reporting
+Single binary: controller, API server, and React dashboard run in one pod.
 
 ## Quick Install
 
 ```bash
 helm install kymaros oci://ghcr.io/kymaroshq/kymaros \
-  --version 0.6.0 \
+  --version 0.6.2 \
   --namespace kymaros-system \
-  --create-namespace \
-  --set ingress.enabled=true \
-  --set ingress.dashboard.host=kymaros.example.com
+  --create-namespace
 ```
 
 ## Key Values
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `controller.image.repository` | Controller image repository | `ghcr.io/kymaroshq/kymaros` |
-| `controller.image.tag` | Controller image tag | `v0.6.0` |
-| `controller.replicas` | Controller replica count | `1` |
-| `controller.leaderElection.enabled` | Enable leader election | `true` |
-| `api.enabled` | Deploy the API server | `true` |
-| `api.image.repository` | API server image repository | `ghcr.io/kymaroshq/kymaros-api` |
-| `api.image.tag` | API server image tag | `v0.6.0` |
-| `dashboard.enabled` | Deploy the React dashboard | `true` |
-| `dashboard.image.repository` | Dashboard image repository | `ghcr.io/kymaroshq/kymaros-frontend` |
-| `dashboard.image.tag` | Dashboard image tag | `v0.6.0` |
+| `image.repository` | Container image repository | `ghcr.io/kymaroshq/kymaros` |
+| `image.tag` | Image tag (defaults to Chart.appVersion) | `""` |
+| `replicas` | Pod replica count | `1` |
+| `leaderElection.enabled` | Enable leader election for HA | `true` |
 | `ingress.enabled` | Create ingress resources | `false` |
 | `ingress.className` | Ingress class name | `nginx` |
-| `ingress.dashboard.host` | Dashboard hostname | `kymaros.example.com` |
-| `ingress.dashboard.tls.enabled` | Enable TLS for dashboard | `false` |
 | `rbac.create` | Create RBAC resources | `true` |
-| `rbac.allowExec` | Allow pods/exec (needed for exec health checks) | `true` |
 | `metrics.enabled` | Expose Prometheus metrics on :8443 | `true` |
 | `metrics.serviceMonitor.enabled` | Create ServiceMonitor | `false` |
 | `metrics.prometheusRule.enabled` | Create alerting PrometheusRule | `false` |
