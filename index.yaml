@@ -5,6 +5,62 @@ entries:
       artifacthub.io/category: security
       artifacthub.io/changes: |
         - kind: added
+          description: Bearer token authentication for write API endpoints (POST, PUT, DELETE)
+        - kind: added
+          description: Auth Helm values (auth.enabled, auth.token, auth.existingSecret)
+        - kind: fixed
+          description: Score thresholds in README and docs corrected to match code (70/90)
+        - kind: fixed
+          description: Chart README rewritten to reflect single-binary architecture
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+    apiVersion: v2
+    appVersion: 0.6.3
+    created: "2026-04-06T18:36:52.135745548+02:00"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: abca2844ac31eb21aeea04b994cc2b21122f538a80c170497fa3cb388436c6a3
+    home: https://kymaros.io
+    icon: https://kymaros.io/logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.3.tgz
+    version: 0.6.3
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: added
           description: Settings page with cluster info, provider status, notifications, sandbox config, metrics
         - kind: added
           description: Enriched GET /api/v1/health with version, K8s version, uptime, pod name
@@ -31,7 +87,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.2
-    created: "2026-04-06T11:45:15.733382062Z"
+    created: "2026-04-06T18:36:52.134011218+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -89,7 +145,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.1
-    created: "2026-04-06T11:45:15.732516322Z"
+    created: "2026-04-06T18:36:52.132370162+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -149,7 +205,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.0
-    created: "2026-04-06T11:45:15.731663682Z"
+    created: "2026-04-06T18:36:52.131347877+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -181,4 +237,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.0.tgz
     version: 0.6.0
-generated: "2026-04-06T11:45:15.730449143Z"
+generated: "2026-04-06T18:36:52.130105402+02:00"
