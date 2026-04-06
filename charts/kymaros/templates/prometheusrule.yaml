@@ -1,0 +1,55 @@
+{{- if and .Values.metrics.enabled .Values.metrics.prometheusRule.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: {{ include "kymaros.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kymaros.labels" . | nindent 4 }}
+    {{- with .Values.metrics.prometheusRule.additionalLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  groups:
+    - name: kymaros.rules
+      rules:
+        # KymarosRestoreTestFailed fires when the restore score drops below the threshold
+        # for 5 minutes, indicating a failing or degraded restore test.
+        - alert: KymarosRestoreTestFailed
+          expr: kymaros_score < {{ .Values.metrics.prometheusRule.rules.scoreThreshold }}
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Kymaros restore test score below threshold"
+            description: >-
+              Restore test {{ "{{" }} $labels.test {{ "}}" }} has a score of {{ "{{" }} $value {{ "}}" }},
+              which is below the threshold of {{ .Values.metrics.prometheusRule.rules.scoreThreshold }}.
+
+        # KymarosRTOExceedsSLA fires when the measured RTO exceeds the configured threshold,
+        # meaning restores are taking longer than the declared SLA target.
+        - alert: KymarosRTOExceedsSLA
+          expr: kymaros_rto_seconds > {{ .Values.metrics.prometheusRule.rules.rtoThresholdSeconds }}
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Kymaros restore RTO exceeds SLA target"
+            description: >-
+              Restore test {{ "{{" }} $labels.test {{ "}}" }} measured RTO of {{ "{{" }} $value {{ "}}" }}s
+              exceeds the SLA threshold of {{ .Values.metrics.prometheusRule.rules.rtoThresholdSeconds }}s.
+
+        # KymarosRestoreTestNotRun fires when no restore tests have completed within
+        # the configured time window, which may indicate the operator is not running.
+        - alert: KymarosRestoreTestNotRun
+          expr: increase(kymaros_tests_total[{{ .Values.metrics.prometheusRule.rules.notRunHoursThreshold }}h]) == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Kymaros restore tests have not run recently"
+            description: >-
+              No Kymaros restore tests have completed in the last
+              {{ .Values.metrics.prometheusRule.rules.notRunHoursThreshold }} hours.
+              Verify the operator is running and RestoreTest schedules are configured correctly.
+{{- end }}

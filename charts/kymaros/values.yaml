@@ -1,0 +1,227 @@
+# ============================================================================
+# Kymaros Helm Chart Values
+# ============================================================================
+# Continuous backup restore validation for Kubernetes.
+# Single binary: controller + API + dashboard in one pod.
+# Full documentation: https://kymaros.io/docs
+# ============================================================================
+
+# -- Install CRDs with the chart. Set to false if managing CRDs separately.
+installCRDs: true
+
+# -- Override the chart name used in resource names.
+nameOverride: ""
+# -- Override the full release name used in resource names.
+fullnameOverride: ""
+
+# -- Global settings applied across all components.
+global:
+  # -- Image pull policy.
+  imagePullPolicy: IfNotPresent
+  # -- List of image pull secret names.
+  imagePullSecrets: []
+  # - name: my-registry-secret
+
+# ============================================================================
+# Image
+# ============================================================================
+image:
+  # -- Container image repository.
+  repository: ghcr.io/kymaroshq/kymaros
+  # -- Image tag. Defaults to Chart.appVersion when empty.
+  tag: ""
+  # -- Image pull policy (overrides global).
+  pullPolicy: ""
+
+# -- Number of pod replicas.
+replicas: 1
+
+# -- Resource requests and limits.
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# -- Leader election (required for multi-replica setups).
+leaderElection:
+  enabled: true
+
+# -- Additional arguments passed to the kymaros binary.
+extraArgs: []
+
+# -- Node selector for pod scheduling.
+nodeSelector: {}
+# -- Tolerations for pod scheduling.
+tolerations: []
+# -- Affinity rules for pod scheduling.
+affinity: {}
+# -- Pod annotations.
+podAnnotations: {}
+
+# -- Pod-level security context.
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# -- Container-level security context.
+securityContext:
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  seccompProfile:
+    type: RuntimeDefault
+  capabilities:
+    drop:
+      - ALL
+
+# ============================================================================
+# Service
+# ============================================================================
+service:
+  # -- Service type.
+  type: ClusterIP
+  # -- Service port (API + dashboard on same port).
+  port: 8080
+
+# ============================================================================
+# Ingress
+# ============================================================================
+ingress:
+  # -- Enable ingress resource.
+  enabled: false
+  # -- Ingress class name (e.g. nginx, traefik).
+  className: nginx
+  # -- Hostname for the dashboard and API.
+  host: kymaros.example.com
+  # -- Annotations applied to the ingress.
+  annotations: {}
+  # cert-manager.io/cluster-issuer: letsencrypt-prod
+  # -- TLS configuration.
+  tls:
+    enabled: false
+    # -- Name of the TLS secret. Auto-generated if empty.
+    secretName: ""
+
+# ============================================================================
+# Service Account
+# ============================================================================
+serviceAccount:
+  # -- Create the service account.
+  create: true
+  # -- Override the service account name. Auto-generated when empty.
+  name: ""
+  # -- Annotations to add to the service account (e.g. for IRSA/Workload Identity).
+  annotations: {}
+
+# ============================================================================
+# RBAC
+# ============================================================================
+rbac:
+  # -- Create RBAC resources (ClusterRoles, ClusterRoleBindings).
+  create: true
+  # -- Allow exec into pods (required for exec health checks).
+  allowExec: true
+
+# ============================================================================
+# Sandbox Configuration (defaults for RestoreTest resources)
+# ============================================================================
+sandbox:
+  # -- Default namespace prefix for sandbox namespaces.
+  namespacePrefix: "rp-test"
+  # -- Default TTL before forced sandbox cleanup.
+  defaultTTL: "30m"
+  # -- Default resource quota applied to sandbox namespaces.
+  defaultQuota:
+    cpu: "2"
+    memory: "4Gi"
+    storage: "10Gi"
+    pods: "20"
+  # -- Default network isolation mode: strict (deny-all) or group (allow intra-group).
+  networkIsolation: strict
+  # -- Automatically clean up sandbox namespaces after test completion.
+  cleanup: true
+
+# ============================================================================
+# Backup Adapters
+# ============================================================================
+adapters:
+  velero:
+    # -- Enable Velero adapter.
+    enabled: true
+    # -- Namespace where Velero is installed.
+    namespace: velero
+
+# ============================================================================
+# Notifications
+# ============================================================================
+notifications:
+  slack:
+    # -- Enable Slack notifications.
+    enabled: false
+    # -- Name of the Secret containing the Slack webhook URL (key: url).
+    webhookSecretRef: ""
+    # -- Default Slack channel for notifications.
+    defaultChannel: "#alerts"
+  webhook:
+    # -- Enable generic webhook notifications.
+    enabled: false
+    # -- Name of the Secret containing the webhook URL (key: url).
+    webhookSecretRef: ""
+
+# ============================================================================
+# Metrics and Observability
+# ============================================================================
+metrics:
+  # -- Enable the metrics endpoint.
+  enabled: true
+  # -- Port for the metrics endpoint (HTTPS).
+  port: 8443
+
+  serviceMonitor:
+    # -- Create a Prometheus ServiceMonitor resource.
+    enabled: false
+    # -- Additional labels added to the ServiceMonitor.
+    additionalLabels: {}
+    # -- Scrape interval.
+    interval: 30s
+    # -- Scrape timeout.
+    scrapeTimeout: 10s
+    # -- Skip TLS verification for metrics scraping.
+    insecureSkipVerify: true
+
+  prometheusRule:
+    # -- Create a Prometheus PrometheusRule resource with alerting rules.
+    enabled: false
+    # -- Additional labels added to the PrometheusRule.
+    additionalLabels: {}
+    rules:
+      # -- Score threshold below which KymarosRestoreTestFailed fires (0-100).
+      scoreThreshold: 70
+      # -- RTO threshold in seconds above which KymarosRTOExceedsSLA fires.
+      rtoThresholdSeconds: 900
+      # -- Hours without a completed test before KymarosRestoreTestNotRun fires.
+      notRunHoursThreshold: 25
+
+  grafanaDashboard:
+    # -- Create a ConfigMap with a Grafana dashboard JSON.
+    enabled: false
+    # -- Labels applied to the ConfigMap (used for Grafana sidecar discovery).
+    labels:
+      grafana_dashboard: "1"
+    # -- Namespace where the dashboard ConfigMap is created. Defaults to release namespace.
+    namespace: ""
+
+# ============================================================================
+# SLA Defaults
+# ============================================================================
+sla:
+  # -- Default RTO target applied when a RestoreTest does not specify one.
+  defaultRTOTarget: "15m"
+  # -- Alert when restore score falls below this threshold.
+  alertScoreThreshold: 70
+  # -- Trigger alert after this many consecutive failures.
+  consecutiveFailureAlert: 3

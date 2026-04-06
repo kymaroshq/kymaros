@@ -1,0 +1,364 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: restorereports.restore.kymaros.io
+spec:
+  group: restore.kymaros.io
+  names:
+    kind: RestoreReport
+    listKind: RestoreReportList
+    plural: restorereports
+    shortNames:
+    - rr
+    singular: restorereport
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.score
+      name: Score
+      type: integer
+    - jsonPath: .status.result
+      name: Result
+      type: string
+    - jsonPath: .spec.testRef
+      name: Test
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: RestoreReport is the Schema for the restorereports API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: RestoreReportSpec defines the desired state of RestoreReport
+            properties:
+              testRef:
+                description: TestRef name of the RestoreTest that generated this report
+                type: string
+            required:
+            - testRef
+            type: object
+          status:
+            description: RestoreReportStatus defines the observed state of RestoreReport.
+            properties:
+              backup:
+                description: Backup info
+                properties:
+                  age:
+                    type: string
+                  name:
+                    type: string
+                  size:
+                    type: string
+                required:
+                - age
+                - name
+                type: object
+              checks:
+                description: Individual check results
+                items:
+                  description: CheckResult captures a single health check result
+                  properties:
+                    duration:
+                      type: string
+                    message:
+                      type: string
+                    name:
+                      type: string
+                    status:
+                      description: 'Status: pass | fail | skip'
+                      type: string
+                  required:
+                  - name
+                  - status
+                  type: object
+                type: array
+              completedAt:
+                format: date-time
+                type: string
+              completeness:
+                description: Resource completeness
+                properties:
+                  configMaps:
+                    type: string
+                  customResources:
+                    type: string
+                  deployments:
+                    type: string
+                  pvcs:
+                    type: string
+                  secrets:
+                    type: string
+                  services:
+                    type: string
+                type: object
+              events:
+                description: Events contains Kubernetes events from the sandbox namespace
+                items:
+                  description: EventLog captures a single Kubernetes event
+                  properties:
+                    count:
+                      description: Count is the number of occurrences
+                      type: integer
+                    involvedObject:
+                      description: InvolvedObject is the object reference (e.g. Pod/my-pod)
+                      type: string
+                    lastTimestamp:
+                      description: LastTimestamp is the last time the event occurred
+                      type: string
+                    message:
+                      description: Message is the event message
+                      type: string
+                    reason:
+                      description: 'Reason: Failed, FailedScheduling, BackOff, etc.'
+                      type: string
+                    type:
+                      description: 'Type: Normal, Warning'
+                      type: string
+                  required:
+                  - involvedObject
+                  - lastTimestamp
+                  - message
+                  - reason
+                  - type
+                  type: object
+                type: array
+              podLogs:
+                description: PodLogs contains logs from pods in the sandbox namespace
+                items:
+                  description: PodLog captures logs for a single pod in the sandbox
+                  properties:
+                    containers:
+                      description: Containers holds logs per container
+                      items:
+                        description: ContainerLog captures log output for a single
+                          container
+                        properties:
+                          log:
+                            description: Log contains the last N lines of log output
+                              (truncated to maxLogLines)
+                            type: string
+                          name:
+                            description: Name of the container
+                            type: string
+                          totalLines:
+                            description: TotalLines is the number of lines before
+                              truncation
+                            type: integer
+                          truncated:
+                            description: Truncated indicates whether the log was truncated
+                            type: boolean
+                          type:
+                            description: 'Type: "container", "init", "previous"'
+                            type: string
+                        required:
+                        - log
+                        - name
+                        - truncated
+                        - type
+                        type: object
+                      type: array
+                    namespace:
+                      description: Namespace is the sandbox namespace
+                      type: string
+                    phase:
+                      description: Phase is the pod phase (Running, Failed, CrashLoopBackOff,
+                        etc.)
+                      type: string
+                    podName:
+                      description: PodName is the name of the pod
+                      type: string
+                  required:
+                  - containers
+                  - namespace
+                  - phase
+                  - podName
+                  type: object
+                type: array
+              result:
+                description: 'Result: pass | fail | partial'
+                type: string
+              rto:
+                description: RTO measurement
+                properties:
+                  measured:
+                    type: string
+                  target:
+                    type: string
+                  withinSLA:
+                    type: boolean
+                required:
+                - measured
+                - withinSLA
+                type: object
+              score:
+                description: Score 0-100 confidence score
+                type: integer
+              startedAt:
+                description: Timing
+                format: date-time
+                type: string
+              validationLevels:
+                description: Validation levels (layered validation)
+                properties:
+                  completeness:
+                    description: LevelResult captures a single validation level result
+                    properties:
+                      detail:
+                        type: string
+                      notTested:
+                        items:
+                          type: string
+                        type: array
+                      status:
+                        description: 'Status: pass | fail | partial | not_tested'
+                        type: string
+                      tested:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - status
+                    type: object
+                  crossNamespaceDeps:
+                    description: LevelResult captures a single validation level result
+                    properties:
+                      detail:
+                        type: string
+                      notTested:
+                        items:
+                          type: string
+                        type: array
+                      status:
+                        description: 'Status: pass | fail | partial | not_tested'
+                        type: string
+                      tested:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - status
+                    type: object
+                  internalHealth:
+                    description: LevelResult captures a single validation level result
+                    properties:
+                      detail:
+                        type: string
+                      notTested:
+                        items:
+                          type: string
+                        type: array
+                      status:
+                        description: 'Status: pass | fail | partial | not_tested'
+                        type: string
+                      tested:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - status
+                    type: object
+                  podStartup:
+                    description: LevelResult captures a single validation level result
+                    properties:
+                      detail:
+                        type: string
+                      notTested:
+                        items:
+                          type: string
+                        type: array
+                      status:
+                        description: 'Status: pass | fail | partial | not_tested'
+                        type: string
+                      tested:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - status
+                    type: object
+                  restoreIntegrity:
+                    description: LevelResult captures a single validation level result
+                    properties:
+                      detail:
+                        type: string
+                      notTested:
+                        items:
+                          type: string
+                        type: array
+                      status:
+                        description: 'Status: pass | fail | partial | not_tested'
+                        type: string
+                      tested:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - status
+                    type: object
+                  rtoCompliance:
+                    description: LevelResult captures a single validation level result
+                    properties:
+                      detail:
+                        type: string
+                      notTested:
+                        items:
+                          type: string
+                        type: array
+                      status:
+                        description: 'Status: pass | fail | partial | not_tested'
+                        type: string
+                      tested:
+                        items:
+                          type: string
+                        type: array
+                    required:
+                    - status
+                    type: object
+                required:
+                - completeness
+                - crossNamespaceDeps
+                - internalHealth
+                - podStartup
+                - restoreIntegrity
+                - rtoCompliance
+                type: object
+            required:
+            - backup
+            - completedAt
+            - completeness
+            - result
+            - rto
+            - score
+            - startedAt
+            - validationLevels
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

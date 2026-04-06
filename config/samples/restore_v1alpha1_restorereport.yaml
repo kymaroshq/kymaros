@@ -1,0 +1,10 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreReport
+metadata:
+  labels:
+    app.kubernetes.io/name: kymaros
+    app.kubernetes.io/managed-by: kustomize
+  name: velero-prod-nightly-20260326-030000
+spec:
+  testRef: velero-prod-nightly
+# status is populated by the operator after each test run
