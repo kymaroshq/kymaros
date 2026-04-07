@@ -560,6 +560,7 @@ func TestHandleTriggerTestMissingName(t *testing.T) {
 // --- CORSMiddleware ---
 
 func TestCORSMiddlewarePreflightReturns204(t *testing.T) {
+	t.Setenv("KYMAROS_CORS_ORIGIN", "https://dashboard.kymaros.io")
 	handler := CORSMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
@@ -574,6 +575,7 @@ func TestCORSMiddlewarePreflightReturns204(t *testing.T) {
 }
 
 func TestCORSMiddlewarePassesThrough(t *testing.T) {
+	t.Setenv("KYMAROS_CORS_ORIGIN", "https://dashboard.kymaros.io")
 	handler := CORSMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
@@ -585,4 +587,19 @@ func TestCORSMiddlewarePassesThrough(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, "https://dashboard.kymaros.io", w.Header().Get("Access-Control-Allow-Origin"))
+}
+
+func TestCORSMiddlewareNoHeaderWhenUnset(t *testing.T) {
+	t.Setenv("KYMAROS_CORS_ORIGIN", "")
+	handler := CORSMiddleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}))
+
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/health", nil)
+	req.Header.Set("Origin", "https://evil.com")
+	w := httptest.NewRecorder()
+	handler.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Empty(t, w.Header().Get("Access-Control-Allow-Origin"))
 }
