@@ -53,7 +53,7 @@ The entire test is invisible to your production workloads.
 # Install Kymaros
 helm repo add kymaros https://charts.kymaros.io
 helm install kymaros kymaros/kymaros \
-  --version 0.6.4 \
+  --version 0.6.5 \
   --namespace kymaros-system \
   --create-namespace
 
