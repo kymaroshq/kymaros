@@ -17,6 +17,7 @@ limitations under the License.
 package api
 
 import (
+	"crypto/subtle"
 	"net/http"
 	"os"
 	"strings"
@@ -50,7 +51,8 @@ func AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		if !strings.HasPrefix(auth, "Bearer ") || strings.TrimPrefix(auth, "Bearer ") != token {
+		provided := strings.TrimPrefix(auth, "Bearer ")
+		if !strings.HasPrefix(auth, "Bearer ") || subtle.ConstantTimeCompare([]byte(provided), []byte(token)) != 1 {
 			writeError(w, http.StatusUnauthorized, "invalid token")
 			return
 		}

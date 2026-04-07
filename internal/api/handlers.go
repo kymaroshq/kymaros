@@ -54,26 +54,24 @@ func writeError(w http.ResponseWriter, status int, msg string) {
 }
 
 // CORSMiddleware adds Access-Control-Allow-* headers.
-// The allowed origin defaults to the request's Origin header when the
-// KYMAROS_CORS_ORIGIN environment variable is unset (single-origin deployments
-// where the dashboard is served from the same host). Set the env var to
-// restrict cross-origin requests in multi-host setups.
+// When KYMAROS_CORS_ORIGIN is set, only that origin is allowed.
+// When it is unset, no CORS headers are emitted (same-origin policy applies).
 func CORSMiddleware(next http.Handler) http.Handler {
 	allowed := os.Getenv("KYMAROS_CORS_ORIGIN")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := allowed
-		if origin == "" {
-			origin = r.Header.Get("Origin")
-		}
-		if origin != "" {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
+		if allowed != "" {
+			w.Header().Set("Access-Control-Allow-Origin", allowed)
 			w.Header().Set("Vary", "Origin")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		}
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 		if r.Method == http.MethodOptions {
-			w.WriteHeader(http.StatusNoContent)
+			if allowed != "" {
+				w.WriteHeader(http.StatusNoContent)
+			} else {
+				w.WriteHeader(http.StatusMethodNotAllowed)
+			}
 			return
 		}
 
@@ -262,6 +260,7 @@ func HandleSchedules(q *Queries) http.HandlerFunc {
 // POST /api/v1/tests
 func HandleCreateTest(q *Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20) // 1 MiB limit
 		var input CreateTestInput
 		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 			writeError(w, http.StatusBadRequest, "invalid JSON: "+err.Error())
@@ -300,6 +299,7 @@ func HandleUpdateTest(q *Queries) http.HandlerFunc {
 			return
 		}
 
+		r.Body = http.MaxBytesReader(w, r.Body, 1<<20) // 1 MiB limit
 		var input CreateTestInput
 		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 			writeError(w, http.StatusBadRequest, "invalid JSON: "+err.Error())
