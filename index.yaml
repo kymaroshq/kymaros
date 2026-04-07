@@ -5,6 +5,68 @@ entries:
       artifacthub.io/category: security
       artifacthub.io/changes: |
         - kind: added
+          description: Global Slack/webhook notification defaults via Helm values
+        - kind: fixed
+          description: Early-failure paths now trigger notifications
+        - kind: security
+          description: Fix CVE-2026-33186 (grpc) and CVE-2026-24051 (otel/sdk)
+        - kind: security
+          description: Timing-safe bearer token comparison (crypto/subtle)
+        - kind: security
+          description: Request body size limit (1 MiB) on POST/PUT endpoints
+        - kind: security
+          description: CORS restricted to explicit KYMAROS_CORS_ORIGIN only
+        - kind: security
+          description: Remove unused RBAC update verb on deployments/statefulsets
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+    apiVersion: v2
+    appVersion: 0.6.5
+    created: "2026-04-07T22:39:42.885502493+02:00"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: 86f1059d7ca27cba983725a435568ef33fa40669d2b6ec4419b8412700941692
+    home: https://kymaros.io
+    icon: https://kymaros.io/logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.5.tgz
+    version: 0.6.5
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: added
           description: Bearer token authentication for write API endpoints (POST, PUT, DELETE)
         - kind: added
           description: Auth Helm values (auth.enabled, auth.token, auth.existingSecret)
@@ -27,7 +89,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.4
-    created: "2026-04-07T21:04:02.901980906+02:00"
+    created: "2026-04-07T22:39:42.88386163+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -57,4 +119,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.4.tgz
     version: 0.6.4
-generated: "2026-04-07T21:04:02.900595463+02:00"
+generated: "2026-04-07T22:39:42.882026481+02:00"
