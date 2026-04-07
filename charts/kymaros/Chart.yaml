@@ -2,8 +2,8 @@ apiVersion: v2
 name: kymaros
 description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
 type: application
-version: 0.6.3
-appVersion: "0.6.3"
+version: 0.6.4
+appVersion: "0.6.4"
 home: https://kymaros.io
 sources:
   - https://github.com/kymaroshq/kymaros

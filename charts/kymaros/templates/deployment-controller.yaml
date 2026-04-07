@@ -37,6 +37,15 @@ spec:
             - --metrics-bind-address=:{{ .Values.metrics.port }}
             - --health-probe-bind-address=:8081
             - --leader-elect={{ .Values.leaderElection.enabled }}
+            {{- if .Values.notifications.slack.enabled }}
+            - --notification-slack-enabled=true
+            - --notification-slack-webhook-secret={{ .Values.notifications.slack.webhookSecretRef }}
+            - --notification-slack-default-channel={{ .Values.notifications.slack.defaultChannel }}
+            {{- end }}
+            {{- if .Values.notifications.webhook.enabled }}
+            - --notification-webhook-enabled=true
+            - --notification-webhook-secret={{ .Values.notifications.webhook.webhookSecretRef }}
+            {{- end }}
             {{- with .Values.extraArgs }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
