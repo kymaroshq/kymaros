@@ -51,8 +51,9 @@ The entire test is invisible to your production workloads.
 
 ```bash
 # Install Kymaros
-helm install kymaros oci://ghcr.io/kymaroshq/kymaros \
-  --version 0.6.3 \
+helm repo add kymaros https://charts.kymaros.io
+helm install kymaros kymaros/kymaros \
+  --version 0.6.4 \
   --namespace kymaros-system \
   --create-namespace
 

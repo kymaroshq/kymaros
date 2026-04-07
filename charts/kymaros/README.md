@@ -7,8 +7,9 @@ Single binary: controller, API server, and React dashboard run in one pod.
 ## Quick Install
 
 ```bash
-helm install kymaros oci://ghcr.io/kymaroshq/kymaros \
-  --version 0.6.2 \
+helm repo add kymaros https://charts.kymaros.io
+helm install kymaros kymaros/kymaros \
+  --version 0.6.4 \
   --namespace kymaros-system \
   --create-namespace
 ```
