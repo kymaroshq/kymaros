@@ -51,14 +51,25 @@ const (
 	backupLatest  = "latest"
 )
 
+// GlobalNotificationDefaults holds operator-wide notification settings that apply
+// when a RestoreTest does not define its own Notifications spec.
+type GlobalNotificationDefaults struct {
+	SlackEnabled        bool
+	SlackWebhookSecret  string // Secret name containing the webhook URL
+	SlackDefaultChannel string
+	WebhookEnabled      bool
+	WebhookSecret       string // Secret name containing the webhook URL
+}
+
 // RestoreTestReconciler reconciles a RestoreTest object
 type RestoreTestReconciler struct {
 	client.Client
-	Scheme         *runtime.Scheme
-	Sandbox        *sandbox.Manager
-	Clientset      kubernetes.Interface // needed for streaming pod logs
-	RestoreTimeout time.Duration        // max wait for Velero restore (default 5min)
-	PodWaitTimeout time.Duration        // max wait for pods ready (default 2min)
+	Scheme              *runtime.Scheme
+	Sandbox             *sandbox.Manager
+	Clientset           kubernetes.Interface // needed for streaming pod logs
+	RestoreTimeout      time.Duration        // max wait for Velero restore (default 5min)
+	PodWaitTimeout      time.Duration        // max wait for pods ready (default 2min)
+	GlobalNotifications GlobalNotificationDefaults
 }
 
 func (r *RestoreTestReconciler) restoreTimeout() time.Duration {
@@ -711,7 +722,7 @@ func (r *RestoreTestReconciler) detectAndNotify(ctx context.Context, test *resto
 		}, logger)
 	}
 
-	if result == restorev1alpha1.ResultFail && test.Spec.Notifications != nil {
+	if result == restorev1alpha1.ResultFail && r.effectiveNotifications(test) != nil {
 		r.sendNotifications(ctx, test, notify.Notification{
 			TestName:  test.Name,
 			Score:     score,
@@ -827,6 +838,16 @@ func (r *RestoreTestReconciler) failTest(ctx context.Context, test *restorev1alp
 		return ctrl.Result{}, fmt.Errorf("update status to Failed: %w", err)
 	}
 
+	// Send failure notifications (including global defaults)
+	if r.effectiveNotifications(test) != nil {
+		r.sendNotifications(ctx, test, notify.Notification{
+			TestName: test.Name,
+			Score:    0,
+			Result:   restorev1alpha1.ResultFail,
+			Message:  reason,
+		}, logger)
+	}
+
 	return ctrl.Result{Requeue: true}, nil
 }
 
@@ -886,14 +907,50 @@ func (r *RestoreTestReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
+// effectiveNotifications returns the notification config to use for a given test.
+// Per-test spec takes priority; if absent, the operator-level global defaults are used.
+// Returns nil when no notifications are configured at either level.
+func (r *RestoreTestReconciler) effectiveNotifications(test *restorev1alpha1.RestoreTest) *restorev1alpha1.NotificationConfig {
+	if test.Spec.Notifications != nil {
+		return test.Spec.Notifications
+	}
+
+	g := r.GlobalNotifications
+	if !g.SlackEnabled && !g.WebhookEnabled {
+		return nil
+	}
+
+	cfg := &restorev1alpha1.NotificationConfig{}
+	if g.SlackEnabled && g.SlackWebhookSecret != "" {
+		ch := restorev1alpha1.NotificationChannel{
+			Type:             "slack",
+			WebhookSecretRef: g.SlackWebhookSecret,
+			Channel:          g.SlackDefaultChannel,
+		}
+		cfg.OnFailure = append(cfg.OnFailure, ch)
+	}
+	if g.WebhookEnabled && g.WebhookSecret != "" {
+		ch := restorev1alpha1.NotificationChannel{
+			Type:             "webhook",
+			WebhookSecretRef: g.WebhookSecret,
+		}
+		cfg.OnFailure = append(cfg.OnFailure, ch)
+	}
+	if len(cfg.OnFailure) == 0 {
+		return nil
+	}
+	return cfg
+}
+
 // sendNotifications sends notifications to all configured channels.
 func (r *RestoreTestReconciler) sendNotifications(ctx context.Context, test *restorev1alpha1.RestoreTest, n notify.Notification, logger *slog.Logger) {
-	if test.Spec.Notifications == nil {
+	notifCfg := r.effectiveNotifications(test)
+	if notifCfg == nil {
 		return
 	}
-	channels := test.Spec.Notifications.OnFailure
+	channels := notifCfg.OnFailure
 	if n.Result == restorev1alpha1.ResultPass {
-		channels = test.Spec.Notifications.OnSuccess
+		channels = notifCfg.OnSuccess
 	}
 	for _, ch := range channels {
 		var notifier notify.Notifier

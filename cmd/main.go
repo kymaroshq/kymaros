@@ -68,6 +68,12 @@ func main() {
 	var apiPort int
 	var staticDir string
 	var tlsOpts []func(*tls.Config)
+	// Global notification defaults (wired from Helm values)
+	var notifSlackEnabled bool
+	var notifSlackWebhookSecret string
+	var notifSlackDefaultChannel string
+	var notifWebhookEnabled bool
+	var notifWebhookSecret string
 	flag.StringVar(&metricsAddr, "metrics-bind-address", "0", "The address the metrics endpoint binds to. "+
 		"Use :8443 for HTTPS or :8080 for HTTP, or leave as 0 to disable the metrics service.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
@@ -87,6 +93,16 @@ func main() {
 		"If set, HTTP/2 will be enabled for the metrics and webhook servers")
 	flag.IntVar(&apiPort, "api-port", 8080, "Port for the API server and dashboard")
 	flag.StringVar(&staticDir, "static-dir", "/static", "Path to frontend static files")
+	flag.BoolVar(&notifSlackEnabled, "notification-slack-enabled", false,
+		"Enable global Slack notifications when a RestoreTest has no per-test notification config.")
+	flag.StringVar(&notifSlackWebhookSecret, "notification-slack-webhook-secret", "",
+		"Name of the Secret (in operator namespace) containing the Slack webhook URL (key: url).")
+	flag.StringVar(&notifSlackDefaultChannel, "notification-slack-default-channel", "#alerts",
+		"Default Slack channel used for global notifications.")
+	flag.BoolVar(&notifWebhookEnabled, "notification-webhook-enabled", false,
+		"Enable global webhook notifications when a RestoreTest has no per-test notification config.")
+	flag.StringVar(&notifWebhookSecret, "notification-webhook-secret", "",
+		"Name of the Secret (in operator namespace) containing the generic webhook URL (key: url).")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -201,6 +217,13 @@ func main() {
 		Scheme:    mgr.GetScheme(),
 		Sandbox:   sandbox.NewManager(mgr.GetClient(), slog.Default()),
 		Clientset: clientset,
+		GlobalNotifications: controller.GlobalNotificationDefaults{
+			SlackEnabled:        notifSlackEnabled,
+			SlackWebhookSecret:  notifSlackWebhookSecret,
+			SlackDefaultChannel: notifSlackDefaultChannel,
+			WebhookEnabled:      notifWebhookEnabled,
+			WebhookSecret:       notifWebhookSecret,
+		},
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "Failed to create controller", "controller", "RestoreTest")
 		os.Exit(1)
