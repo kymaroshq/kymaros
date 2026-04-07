@@ -2,8 +2,8 @@ apiVersion: v2
 name: kymaros
 description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
 type: application
-version: 0.6.4
-appVersion: "0.6.4"
+version: 0.6.5
+appVersion: "0.6.5"
 home: https://kymaros.io
 sources:
   - https://github.com/kymaroshq/kymaros
@@ -41,10 +41,16 @@ annotations:
       url: https://kymaros.io/screenshots/report-detail.png
   artifacthub.io/changes: |
     - kind: added
-      description: Bearer token authentication for write API endpoints (POST, PUT, DELETE)
-    - kind: added
-      description: Auth Helm values (auth.enabled, auth.token, auth.existingSecret)
+      description: Global Slack/webhook notification defaults via Helm values
     - kind: fixed
-      description: Score thresholds in README and docs corrected to match code (70/90)
-    - kind: fixed
-      description: Chart README rewritten to reflect single-binary architecture
+      description: Early-failure paths now trigger notifications
+    - kind: security
+      description: Fix CVE-2026-33186 (grpc) and CVE-2026-24051 (otel/sdk)
+    - kind: security
+      description: Timing-safe bearer token comparison (crypto/subtle)
+    - kind: security
+      description: Request body size limit (1 MiB) on POST/PUT endpoints
+    - kind: security
+      description: CORS restricted to explicit KYMAROS_CORS_ORIGIN only
+    - kind: security
+      description: Remove unused RBAC update verb on deployments/statefulsets
