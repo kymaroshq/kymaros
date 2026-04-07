@@ -101,7 +101,7 @@ func (r *RestoreTestReconciler) podWaitTimeout() time.Duration {
 // +kubebuilder:rbac:groups="",resources=secrets;configmaps,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=resourcequotas;limitranges,verbs=create;delete
 // +kubebuilder:rbac:groups=networking.k8s.io,resources=networkpolicies,verbs=create;delete
-// +kubebuilder:rbac:groups=apps,resources=deployments;statefulsets,verbs=get;list;watch;update
+// +kubebuilder:rbac:groups=apps,resources=deployments;statefulsets,verbs=get;list;watch
 // +kubebuilder:rbac:groups="",resources=persistentvolumeclaims,verbs=get;list;watch
 // +kubebuilder:rbac:groups=velero.io,resources=backups,verbs=get;list;watch
 // +kubebuilder:rbac:groups=velero.io,resources=restores,verbs=get;list;watch;create;delete

@@ -24,7 +24,6 @@ Kymaros follows the principle of least privilege:
 - The Operator only requests the RBAC permissions it needs (see `config/rbac/role.yaml`)
 - Sandbox namespaces are isolated with NetworkPolicy deny-all by default
 - No data leaves your cluster (no telemetry, no phone-home)
-- License validation is offline (HMAC, no external server)
 - The API server does not store credentials (uses Kubernetes Secrets)
 - All container images run as non-root with read-only root filesystems
 - Exec health checks use the Kubernetes API (no shell injection surface)
