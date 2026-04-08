@@ -9,7 +9,7 @@ Single binary: controller, API server, and React dashboard run in one pod.
 ```bash
 helm repo add kymaros https://charts.kymaros.io
 helm install kymaros kymaros/kymaros \
-  --version 0.6.5 \
+  --version 0.6.6 \
   --namespace kymaros-system \
   --create-namespace
 ```
@@ -22,8 +22,11 @@ helm install kymaros kymaros/kymaros \
 | `image.tag` | Image tag (defaults to Chart.appVersion) | `""` |
 | `replicas` | Pod replica count | `1` |
 | `leaderElection.enabled` | Enable leader election for HA | `true` |
-| `ingress.enabled` | Create ingress resources | `false` |
+| `ingress.enabled` | Create legacy Ingress resource | `false` |
 | `ingress.className` | Ingress class name | `nginx` |
+| `gatewayAPI.enabled` | Create HTTPRoute (Gateway API) | `false` |
+| `gatewayAPI.hostnames` | Hostnames matched by the route | `[kymaros.example.com]` |
+| `gatewayAPI.parentRefs` | Parent Gateway references | `[{name: kymaros-gateway}]` |
 | `rbac.create` | Create RBAC resources | `true` |
 | `metrics.enabled` | Expose Prometheus metrics on :8443 | `true` |
 | `metrics.serviceMonitor.enabled` | Create ServiceMonitor | `false` |
@@ -35,6 +38,31 @@ helm install kymaros kymaros/kymaros \
 | `adapters.velero.namespace` | Namespace where Velero is installed | `velero` |
 | `sla.defaultRTOTarget` | Default RTO target | `15m` |
 | `sla.alertScoreThreshold` | Alert score threshold | `70` |
+
+## Exposing the dashboard
+
+Pick one of the two options:
+
+**Gateway API (recommended)** — requires Gateway API CRDs and an existing Gateway:
+```yaml
+gatewayAPI:
+  enabled: true
+  hostnames:
+    - kymaros.example.com
+  parentRefs:
+    - name: my-gateway
+      namespace: gateway-system
+```
+
+**Legacy Ingress** — for clusters without Gateway API:
+```yaml
+ingress:
+  enabled: true
+  className: nginx
+  host: kymaros.example.com
+  tls:
+    enabled: true
+```
 
 ## Prometheus Metrics
 
