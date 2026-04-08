@@ -5,6 +5,58 @@ entries:
       artifacthub.io/category: security
       artifacthub.io/changes: |
         - kind: added
+          description: Gateway API support — HTTPRoute resource via gatewayAPI Helm values
+        - kind: added
+          description: Mutually exclusive with legacy Ingress; pick one
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+    apiVersion: v2
+    appVersion: 0.6.6
+    created: "2026-04-08T07:59:28.745388883+02:00"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: 46d9156fbb158dc8557a9f49b2efa59cf91b5d705bbba9e184cf62498647802d
+    home: https://kymaros.io
+    icon: https://kymaros.io/logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.6.tgz
+    version: 0.6.6
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
+        - kind: added
           description: Global Slack/webhook notification defaults via Helm values
         - kind: fixed
           description: Early-failure paths now trigger notifications
@@ -33,7 +85,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.5
-    created: "2026-04-07T22:39:42.885502493+02:00"
+    created: "2026-04-08T07:59:28.743686291+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -89,7 +141,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.4
-    created: "2026-04-07T22:39:42.88386163+02:00"
+    created: "2026-04-08T07:59:28.741542282+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -119,4 +171,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.4.tgz
     version: 0.6.4
-generated: "2026-04-07T22:39:42.882026481+02:00"
+generated: "2026-04-08T07:59:28.739548634+02:00"
