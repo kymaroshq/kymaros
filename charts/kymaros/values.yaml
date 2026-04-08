@@ -29,7 +29,7 @@ image:
   # -- Container image repository.
   repository: ghcr.io/kymaroshq/kymaros
   # -- Image tag. Defaults to Chart.appVersion when empty.
-  tag: "0.6.4"
+  tag: "0.6.5"
   # -- Image pull policy (overrides global).
   pullPolicy: ""
 
@@ -88,8 +88,9 @@ service:
   port: 8080
 
 # ============================================================================
-# Ingress
+# Ingress (legacy networking.k8s.io/v1)
 # ============================================================================
+# Use ingress OR gatewayAPI, not both. Gateway API is the modern successor.
 ingress:
   # -- Enable ingress resource.
   enabled: false
@@ -105,6 +106,30 @@ ingress:
     enabled: false
     # -- Name of the TLS secret. Auto-generated if empty.
     secretName: ""
+
+# ============================================================================
+# Gateway API (gateway.networking.k8s.io/v1)
+# ============================================================================
+# Modern successor to Ingress. Requires Gateway API CRDs installed in the
+# cluster (kubectl get crd gateways.gateway.networking.k8s.io).
+gatewayAPI:
+  # -- Enable HTTPRoute resource.
+  enabled: false
+  # -- Hostnames the route matches.
+  hostnames:
+    - kymaros.example.com
+  # -- Parent Gateway references. The Gateway must already exist.
+  parentRefs:
+    - name: kymaros-gateway
+      # namespace: gateway-system  # optional, defaults to release namespace
+      # sectionName: https         # optional, listener name
+  # -- Path matching for the HTTPRoute. Defaults to all paths.
+  matches:
+    - path:
+        type: PathPrefix
+        value: /
+  # -- Annotations applied to the HTTPRoute.
+  annotations: {}
 
 # ============================================================================
 # Service Account
