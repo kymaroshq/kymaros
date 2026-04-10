@@ -16,6 +16,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue.svg" alt="License" /></a>
   <a href="https://kubernetes.io"><img src="https://img.shields.io/badge/kubernetes-1.28--1.31-326CE5?logo=kubernetes&logoColor=white" alt="Kubernetes" /></a>
   <a href="https://go.dev"><img src="https://img.shields.io/badge/go-1.25-00ADD8?logo=go&logoColor=white" alt="Go" /></a>
+  <a href="https://artifacthub.io/packages/search?repo=kymaros"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/kymaros" alt="Artifact Hub" /></a>
 </p>
 
 <p align="center">
