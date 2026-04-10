@@ -30,8 +30,8 @@ annotations:
   artifacthub.io/category: security
   artifacthub.io/operatorCapabilities: Full Lifecycle
   artifacthub.io/signKey: |
-    fingerprint: cosign
-    url: https://github.com/kymaroshq/kymaros/releases/download/v0.6.7/cosign.pub
+    fingerprint: 044D05487137769187C97B4057C4C6A30214F8A6
+    url: https://kymaros.io/kymaros-gpg.pub
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: Documentation
@@ -49,4 +49,4 @@ annotations:
     - kind: added
       description: Helm values.schema.json for input validation
     - kind: added
-      description: Cosign chart signing for supply chain security
+      description: GPG chart signing for supply chain security
