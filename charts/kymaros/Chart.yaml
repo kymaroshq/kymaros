@@ -30,7 +30,7 @@ annotations:
   artifacthub.io/category: security
   artifacthub.io/operatorCapabilities: Full Lifecycle
   artifacthub.io/signKey: |
-    fingerprint: 044D05487137769187C97B4057C4C6A30214F8A6
+    fingerprint: 2FBF225C052F2603E7D2F062F5E10C1897987022
     url: https://kymaros.io/kymaros-gpg.pub
   artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
