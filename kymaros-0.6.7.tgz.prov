@@ -1,0 +1,76 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  artifacthub.io/category: security
+  artifacthub.io/changes: |
+    - kind: security
+      description: Fix CVE-2026-39883 — upgrade go.opentelemetry.io/otel/sdk to v1.43.0
+    - kind: added
+      description: Helm values.schema.json for input validation
+    - kind: added
+      description: GPG chart signing for supply chain security
+  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.kymaros.io
+    - name: Website
+      url: https://kymaros.io
+  artifacthub.io/operator: "true"
+  artifacthub.io/operatorCapabilities: Full Lifecycle
+  artifacthub.io/screenshots: |
+    - title: Dashboard Overview
+      url: https://kymaros.io/screenshots/dashboard-overview.png
+    - title: Report Detail
+      url: https://kymaros.io/screenshots/report-detail.png
+  artifacthub.io/signKey: |
+    fingerprint: 2FBF225C052F2603E7D2F062F5E10C1897987022
+    url: https://kymaros.io/kymaros-gpg.pub
+apiVersion: v2
+appVersion: 0.6.7
+description: Kubernetes operator that validates backup restorability continuously
+  — automated restore testing with scoring, health checks, and SLA compliance tracking.
+home: https://kymaros.io
+icon: https://kymaros.io/kymaros-logo.svg
+keywords:
+- - kubernetes
+- - backup
+- - velero
+- - disaster-recovery
+- - restore
+- - validation
+- - operator
+- - compliance
+- - sre
+- - helm
+- - prometheus
+- - soc2
+maintainers:
+- - name: kymaroshq
+  url: https://github.com/kymaroshq
+name: kymaros
+sources:
+- - https://github.com/kymaroshq/kymaros
+type: application
+version: 0.6.7
+
+...
+files:
+  kymaros-0.6.7.tgz: sha256:c988cb742fbc65b295fcad6a7ecdeb55bca2af9fd4a697c30d43503516bf76e4
+-----BEGIN PGP SIGNATURE-----
+
+wsFcBAEBCgAQBQJp2X+HCRD14QwYl5hwIgAAjh4QABy6Nd4lR205pQpKYh3aICIV
+19AROrWVWq3Bn+AQrHr+HZtvaqO4RMCQwA7+41QcHETKmW2yCE9nQYFqIpY1AhyL
+E94xR3S+xsC2eNdrvFrT+J9nxK5fPi5Bl56J5rFOXEYH5Qle0R0oFzNX3k9bOP/C
+BZF8cNu7jZ66+t8di9rrzna/Zsge7z1Lg80XlcZ8v4NDsJoArrOO+etfbiGo3SZ0
+HLeQYsZbkoZ/j/cwJoz95ZlE8YcWR/nS+Rm+mvBQzHkB0NwmUFeRTgDunwek3u3R
+kfcXi5p1mjyxrDUDebwhhREkMhejj+sGNSwY9jj4xBMQAxFQoZErJZbecDmTqg6H
+060qKO+DKuCEl3NxJ4kUFg/nbK/TnailWaHrd+6/0sp8eg6yuYgZPHn4N3/pR9M/
+u+EnMhcu6FGegV2DJ7nh156DHyOPi3h8prDB/Cj4pfHqBCe7HZF/zs59iMwtdUrN
+gcYLIPTNCxwzWP24+vXTREYIOVL5m5kbV37WRDLmo10KVxYYXZ333UTnzH2j2J1C
+KWKHtdpCirT6bMuD+nK7F1FtKhmXHa88S2nJhk/jcfM3EeHzHSpZ49P/l2CeGTMm
+Mp6yOsCSWvDyNTkYRZru5NnIh8hxyuHP56/1H5B38LvidJBewcMlzVMX4heKMiEN
+MAW+IVRQvK/ZX+Nxfr1a
+=BlVU
+-----END PGP SIGNATURE-----
