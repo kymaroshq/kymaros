@@ -2,12 +2,12 @@ apiVersion: v2
 name: kymaros
 description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
 type: application
-version: 0.6.6
-appVersion: "0.6.6"
+version: 0.6.7
+appVersion: "0.6.7"
 home: https://kymaros.io
 sources:
   - https://github.com/kymaroshq/kymaros
-icon: https://kymaros.io/logo.svg
+icon: https://kymaros.io/kymaros-logo.svg
 keywords:
   - kubernetes
   - backup
@@ -29,6 +29,10 @@ annotations:
   artifacthub.io/operator: "true"
   artifacthub.io/category: security
   artifacthub.io/operatorCapabilities: Full Lifecycle
+  artifacthub.io/signKey: |
+    fingerprint: cosign
+    url: https://github.com/kymaroshq/kymaros/releases/download/v0.6.7/cosign.pub
+  artifacthub.io/containsSecurityUpdates: "true"
   artifacthub.io/links: |
     - name: Documentation
       url: https://docs.kymaros.io
@@ -40,7 +44,9 @@ annotations:
     - title: Report Detail
       url: https://kymaros.io/screenshots/report-detail.png
   artifacthub.io/changes: |
+    - kind: security
+      description: Fix CVE-2026-39883 — upgrade go.opentelemetry.io/otel/sdk to v1.43.0
     - kind: added
-      description: Gateway API support — HTTPRoute resource via gatewayAPI Helm values
+      description: Helm values.schema.json for input validation
     - kind: added
-      description: Mutually exclusive with legacy Ingress; pick one
+      description: Cosign chart signing for supply chain security

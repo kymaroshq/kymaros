@@ -9,7 +9,7 @@ Single binary: controller, API server, and React dashboard run in one pod.
 ```bash
 helm repo add kymaros https://charts.kymaros.io
 helm install kymaros kymaros/kymaros \
-  --version 0.6.6 \
+  --version 0.6.7 \
   --namespace kymaros-system \
   --create-namespace
 ```

@@ -29,7 +29,7 @@ image:
   # -- Container image repository.
   repository: ghcr.io/kymaroshq/kymaros
   # -- Image tag. Defaults to Chart.appVersion when empty.
-  tag: "0.6.5"
+  tag: "0.6.7"
   # -- Image pull policy (overrides global).
   pullPolicy: ""
 

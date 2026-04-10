@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="Kymaros" width="64" height="64" />
+  <img src="assets/kymaros-logo.svg" alt="Kymaros" width="64" height="64" />
 </p>
 
 <h1 align="center">Kymaros</h1>
