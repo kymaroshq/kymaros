@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Kubernetes blue gradient -->
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <!-- Wave shimmer -->
+    <linearGradient id="waveGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#E0F2FE" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.9"/>
+    </linearGradient>
+    <!-- Anchor gradient -->
+    <linearGradient id="anchorGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#DBEAFE" stop-opacity="0.95"/>
+    </linearGradient>
+    <!-- Subtle shadow -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#1E3A5F" flood-opacity="0.3"/>
+    </filter>
+    <!-- Inner glow on shield -->
+    <filter id="innerGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+      <feOffset dx="0" dy="2" result="offsetBlur"/>
+      <feComposite in="SourceGraphic" in2="offsetBlur" operator="over"/>
+    </filter>
+  </defs>
+  
+  <!-- Shield shape - rounded, modern -->
+  <path d="
+    M256 42
+    C256 42 100 72 100 72
+    C80 82 64 100 64 126
+    L64 240
+    C64 340 140 420 256 472
+    C372 420 448 340 448 240
+    L448 126
+    C448 100 432 82 412 72
+    C412 72 256 42 256 42Z
+  " fill="url(#shieldGrad)" filter="url(#shadow)"/>
+  
+  <!-- Shield inner border highlight -->
+  <path d="
+    M256 58
+    C256 58 112 84 112 84
+    C96 92 82 106 82 128
+    L82 238
+    C82 330 150 404 256 452
+    C362 404 430 330 430 238
+    L430 128
+    C430 106 416 92 400 84
+    C400 84 256 58 256 58Z
+  " fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+
+  <!-- Wave - flowing curve across the shield -->
+  <path d="
+    M100 280
+    C140 250, 180 310, 220 270
+    C260 230, 300 290, 340 260
+    C380 230, 420 270, 440 250
+  " fill="none" stroke="url(#waveGrad)" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+  
+  <path d="
+    M90 300
+    C130 270, 170 330, 210 290
+    C250 250, 290 310, 330 280
+    C370 250, 410 290, 450 270
+  " fill="none" stroke="url(#waveGrad)" stroke-width="4" stroke-linecap="round" opacity="0.3"/>
+
+  <!-- Anchor - simplified, modern, centered -->
+  <g transform="translate(256, 220)" fill="url(#anchorGrad)">
+    <!-- Anchor ring -->
+    <circle cx="0" cy="-60" r="18" fill="none" stroke="url(#anchorGrad)" stroke-width="7"/>
+    
+    <!-- Anchor vertical shaft -->
+    <rect x="-4" y="-42" width="8" height="110" rx="4"/>
+    
+    <!-- Anchor crossbar -->
+    <rect x="-40" y="10" width="80" height="8" rx="4"/>
+    
+    <!-- Anchor flukes (curved arms at bottom) -->
+    <path d="M-4 68 C-4 68, -50 60, -55 30" fill="none" stroke="url(#anchorGrad)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M4 68 C4 68, 50 60, 55 30" fill="none" stroke="url(#anchorGrad)" stroke-width="7" stroke-linecap="round"/>
+    
+    <!-- Small arrow tips on flukes -->
+    <circle cx="-55" cy="28" r="5" fill="url(#anchorGrad)"/>
+    <circle cx="55" cy="28" r="5" fill="url(#anchorGrad)"/>
+  </g>
+
+  <!-- Checkmark badge - small, bottom right of shield -->
+  <g transform="translate(360, 380)">
+    <circle cx="0" cy="0" r="28" fill="#10B981"/>
+    <circle cx="0" cy="0" r="26" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <path d="M-12 0 L-4 8 L14 -8" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

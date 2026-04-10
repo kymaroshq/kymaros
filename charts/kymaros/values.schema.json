@@ -1,0 +1,513 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "installCRDs": {
+      "type": "boolean",
+      "description": "Install CRDs with the chart. Set to false if managing CRDs separately."
+    },
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the chart name used in resource names."
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "description": "Override the full release name used in resource names."
+    },
+    "global": {
+      "type": "object",
+      "properties": {
+        "imagePullPolicy": {
+          "type": "string",
+          "enum": ["Always", "IfNotPresent", "Never"],
+          "description": "Image pull policy."
+        },
+        "imagePullSecrets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" }
+            },
+            "required": ["name"]
+          },
+          "description": "List of image pull secret names."
+        }
+      }
+    },
+    "image": {
+      "type": "object",
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Container image repository."
+        },
+        "tag": {
+          "type": "string",
+          "description": "Image tag. Defaults to Chart.appVersion when empty."
+        },
+        "pullPolicy": {
+          "type": "string",
+          "enum": ["", "Always", "IfNotPresent", "Never"],
+          "description": "Image pull policy (overrides global)."
+        }
+      },
+      "required": ["repository"]
+    },
+    "replicas": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of pod replicas."
+    },
+    "resources": {
+      "type": "object",
+      "description": "Resource requests and limits.",
+      "properties": {
+        "limits": {
+          "type": "object",
+          "properties": {
+            "cpu": { "type": "string" },
+            "memory": { "type": "string" }
+          }
+        },
+        "requests": {
+          "type": "object",
+          "properties": {
+            "cpu": { "type": "string" },
+            "memory": { "type": "string" }
+          }
+        }
+      }
+    },
+    "leaderElection": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable leader election (required for multi-replica setups)."
+        }
+      }
+    },
+    "extraArgs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Additional arguments passed to the kymaros binary."
+    },
+    "nodeSelector": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Node selector for pod scheduling."
+    },
+    "tolerations": {
+      "type": "array",
+      "items": { "type": "object" },
+      "description": "Tolerations for pod scheduling."
+    },
+    "affinity": {
+      "type": "object",
+      "description": "Affinity rules for pod scheduling."
+    },
+    "podAnnotations": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Pod annotations."
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "description": "Pod-level security context.",
+      "properties": {
+        "runAsNonRoot": { "type": "boolean" },
+        "seccompProfile": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["RuntimeDefault", "Localhost", "Unconfined"] }
+          }
+        }
+      }
+    },
+    "securityContext": {
+      "type": "object",
+      "description": "Container-level security context.",
+      "properties": {
+        "runAsNonRoot": { "type": "boolean" },
+        "readOnlyRootFilesystem": { "type": "boolean" },
+        "allowPrivilegeEscalation": { "type": "boolean" },
+        "seccompProfile": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string" }
+          }
+        },
+        "capabilities": {
+          "type": "object",
+          "properties": {
+            "drop": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "add": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ClusterIP", "NodePort", "LoadBalancer"],
+          "description": "Service type."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Service port (API + dashboard on same port)."
+        }
+      }
+    },
+    "ingress": {
+      "type": "object",
+      "description": "Ingress configuration (legacy networking.k8s.io/v1). Use ingress OR gatewayAPI, not both.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable ingress resource."
+        },
+        "className": {
+          "type": "string",
+          "description": "Ingress class name (e.g. nginx, traefik)."
+        },
+        "host": {
+          "type": "string",
+          "description": "Hostname for the dashboard and API."
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Annotations applied to the ingress."
+        },
+        "tls": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable TLS."
+            },
+            "secretName": {
+              "type": "string",
+              "description": "Name of the TLS secret. Auto-generated if empty."
+            }
+          }
+        }
+      }
+    },
+    "gatewayAPI": {
+      "type": "object",
+      "description": "Gateway API configuration (gateway.networking.k8s.io/v1). Modern successor to Ingress.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable HTTPRoute resource."
+        },
+        "hostnames": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Hostnames the route matches."
+        },
+        "parentRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "namespace": { "type": "string" },
+              "sectionName": { "type": "string" }
+            },
+            "required": ["name"]
+          },
+          "description": "Parent Gateway references."
+        },
+        "matches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["Exact", "PathPrefix", "RegularExpression"] },
+                  "value": { "type": "string" }
+                }
+              }
+            }
+          },
+          "description": "Path matching for the HTTPRoute."
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Annotations applied to the HTTPRoute."
+        }
+      }
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "description": "Create the service account."
+        },
+        "name": {
+          "type": "string",
+          "description": "Override the service account name."
+        },
+        "annotations": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Annotations to add to the service account."
+        }
+      }
+    },
+    "rbac": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "description": "Create RBAC resources (ClusterRoles, ClusterRoleBindings)."
+        },
+        "allowExec": {
+          "type": "boolean",
+          "description": "Allow exec into pods (required for exec health checks)."
+        }
+      }
+    },
+    "sandbox": {
+      "type": "object",
+      "description": "Sandbox configuration (defaults for RestoreTest resources).",
+      "properties": {
+        "namespacePrefix": {
+          "type": "string",
+          "description": "Default namespace prefix for sandbox namespaces."
+        },
+        "defaultTTL": {
+          "type": "string",
+          "pattern": "^[0-9]+(s|m|h)$",
+          "description": "Default TTL before forced sandbox cleanup (e.g. 30m)."
+        },
+        "defaultQuota": {
+          "type": "object",
+          "properties": {
+            "cpu": { "type": "string" },
+            "memory": { "type": "string" },
+            "storage": { "type": "string" },
+            "pods": { "type": "string" }
+          },
+          "description": "Default resource quota applied to sandbox namespaces."
+        },
+        "networkIsolation": {
+          "type": "string",
+          "enum": ["strict", "group"],
+          "description": "Default network isolation mode: strict (deny-all) or group (allow intra-group)."
+        },
+        "cleanup": {
+          "type": "boolean",
+          "description": "Automatically clean up sandbox namespaces after test completion."
+        }
+      }
+    },
+    "adapters": {
+      "type": "object",
+      "description": "Backup adapter configuration.",
+      "properties": {
+        "velero": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable Velero adapter."
+            },
+            "namespace": {
+              "type": "string",
+              "description": "Namespace where Velero is installed."
+            }
+          }
+        }
+      }
+    },
+    "notifications": {
+      "type": "object",
+      "description": "Notification configuration.",
+      "properties": {
+        "slack": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable Slack notifications."
+            },
+            "webhookSecretRef": {
+              "type": "string",
+              "description": "Name of the Secret containing the Slack webhook URL (key: url)."
+            },
+            "defaultChannel": {
+              "type": "string",
+              "description": "Default Slack channel for notifications."
+            }
+          }
+        },
+        "webhook": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable generic webhook notifications."
+            },
+            "webhookSecretRef": {
+              "type": "string",
+              "description": "Name of the Secret containing the webhook URL (key: url)."
+            }
+          }
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "description": "Authentication configuration for write endpoints.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable bearer token authentication for write endpoints."
+        },
+        "token": {
+          "type": "string",
+          "description": "Static bearer token. If empty and enabled=true, provide a token via existingSecret."
+        },
+        "existingSecret": {
+          "type": "string",
+          "description": "Name of an existing Secret containing the token (key: token)."
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Metrics and observability configuration.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable the metrics endpoint."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "description": "Port for the metrics endpoint (HTTPS)."
+        },
+        "serviceMonitor": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Create a Prometheus ServiceMonitor resource."
+            },
+            "additionalLabels": {
+              "type": "object",
+              "additionalProperties": { "type": "string" },
+              "description": "Additional labels added to the ServiceMonitor."
+            },
+            "interval": {
+              "type": "string",
+              "description": "Scrape interval."
+            },
+            "scrapeTimeout": {
+              "type": "string",
+              "description": "Scrape timeout."
+            },
+            "insecureSkipVerify": {
+              "type": "boolean",
+              "description": "Skip TLS verification for metrics scraping."
+            }
+          }
+        },
+        "prometheusRule": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Create a Prometheus PrometheusRule resource with alerting rules."
+            },
+            "additionalLabels": {
+              "type": "object",
+              "additionalProperties": { "type": "string" },
+              "description": "Additional labels added to the PrometheusRule."
+            },
+            "rules": {
+              "type": "object",
+              "properties": {
+                "scoreThreshold": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "Score threshold below which KymarosRestoreTestFailed fires (0-100)."
+                },
+                "rtoThresholdSeconds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "RTO threshold in seconds above which KymarosRTOExceedsSLA fires."
+                },
+                "notRunHoursThreshold": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Hours without a completed test before KymarosRestoreTestNotRun fires."
+                }
+              }
+            }
+          }
+        },
+        "grafanaDashboard": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Create a ConfigMap with a Grafana dashboard JSON."
+            },
+            "labels": {
+              "type": "object",
+              "additionalProperties": { "type": "string" },
+              "description": "Labels applied to the ConfigMap (used for Grafana sidecar discovery)."
+            },
+            "namespace": {
+              "type": "string",
+              "description": "Namespace where the dashboard ConfigMap is created."
+            }
+          }
+        }
+      }
+    },
+    "sla": {
+      "type": "object",
+      "description": "SLA default configuration.",
+      "properties": {
+        "defaultRTOTarget": {
+          "type": "string",
+          "pattern": "^[0-9]+(s|m|h)$",
+          "description": "Default RTO target applied when a RestoreTest does not specify one."
+        },
+        "alertScoreThreshold": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Alert when restore score falls below this threshold."
+        },
+        "consecutiveFailureAlert": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Trigger alert after this many consecutive failures."
+        }
+      }
+    }
+  }
+}

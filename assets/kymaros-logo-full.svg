@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" width="400" height="100">
+  <defs>
+    <linearGradient id="sg2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Shield icon -->
+  <g transform="translate(10, 10)">
+    <path d="
+      M40 2
+      C40 2 8 12 8 12
+      C5 13.5 2 17 2 21
+      L2 42
+      C2 58 16 70 40 78
+      C64 70 78 58 78 42
+      L78 21
+      C78 17 75 13.5 72 12
+      C72 12 40 2 40 2Z
+    " fill="url(#sg2)"/>
+    
+    <!-- Anchor -->
+    <g transform="translate(40, 34)" stroke="white" fill="none" stroke-width="3" stroke-linecap="round">
+      <circle cx="0" cy="-12" r="5"/>
+      <line x1="0" y1="-7" x2="0" y2="18"/>
+      <line x1="-12" y1="3" x2="12" y2="3"/>
+      <path d="M-1.5 18 C-1.5 18, -14 15, -15 6"/>
+      <path d="M1.5 18 C1.5 18, 14 15, 15 6"/>
+    </g>
+    
+    <!-- Wave -->
+    <path d="M8 50 C18 45, 28 55, 40 48 C52 41, 62 49, 72 45" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+    
+    <!-- Check badge -->
+    <g transform="translate(64, 64)">
+      <circle cx="0" cy="0" r="9" fill="#10B981"/>
+      <path d="M-4 0 L-1.5 2.5 L5 -3" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+  
+  <!-- Text "Kymaros" -->
+  <text x="105" y="62" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="42" font-weight="600" fill="#F8FAFC" letter-spacing="-0.5">
+    Kymaros
+  </text>
+</svg>
