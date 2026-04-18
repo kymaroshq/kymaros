@@ -1,0 +1,32 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreTest
+metadata:
+  name: postgres-ha-test
+  namespace: kymaros-demo-postgres
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: postgresql-ha
+spec:
+  backupSource:
+    provider: velero
+    backupName: "latest"
+    namespaces:
+      - name: kymaros-demo-postgres
+  schedule:
+    cron: "0 4 * * *"
+    timezone: "UTC"
+  sandbox:
+    namespacePrefix: "kymaros-demo-pg"
+    ttl: "10m0s"
+    networkIsolation: "strict"
+    resourceQuota:
+      cpu: "2"
+      memory: "2Gi"
+      storage: "10Gi"
+  healthChecks:
+    policyRef: "postgres-ha-checks"
+    timeout: "5m0s"
+  sla:
+    maxRTO: "8m0s"
+    alertOnExceed: true
+  historyLimit: 10

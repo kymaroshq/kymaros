@@ -1,0 +1,37 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreTest
+metadata:
+  name: microservices-test
+  namespace: kymaros-demo-ms-api
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: microservices-app
+spec:
+  backupSource:
+    provider: velero
+    backupName: "latest"
+    # Multi-namespace restore: all three namespaces are restored together
+    namespaces:
+      - name: kymaros-demo-ms-api
+      - name: kymaros-demo-ms-db
+      - name: kymaros-demo-ms-cache
+  schedule:
+    cron: "0 4 * * *"
+    timezone: "UTC"
+  sandbox:
+    namespacePrefix: "kymaros-demo-ms"
+    ttl: "10m0s"
+    # "group" mode allows traffic between sandbox namespaces
+    # while blocking all external traffic.
+    # Without this, cross-namespace DNS resolution would fail.
+    networkIsolation: "group"
+    resourceQuota:
+      cpu: "4"
+      memory: "2Gi"
+  healthChecks:
+    policyRef: "microservices-checks"
+    timeout: "8m0s"
+  sla:
+    maxRTO: "10m0s"
+    alertOnExceed: true
+  historyLimit: 10

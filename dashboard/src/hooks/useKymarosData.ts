@@ -99,7 +99,7 @@ export function useSummary(): ApiState<SummaryResponse> {
   return useApiData(() => kymarosApi.getSummary());
 }
 
-export function useDailyScores(days = 30): ApiState<DailySummary[]> {
+export function useDailyScores(days = 7): ApiState<DailySummary[]> {
   return useApiData(() => kymarosApi.getDailyScores(days), 300_000, [days]);
 }
 

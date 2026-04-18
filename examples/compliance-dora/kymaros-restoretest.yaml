@@ -1,0 +1,50 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreTest
+metadata:
+  name: dora-compliance-test
+  # Deploy in the namespace you want to validate
+  namespace: your-production-namespace
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: compliance-dora
+    # Structured labels for audit filtering
+    kymaros.io/compliance: dora
+    kymaros.io/regulation: "dora-art-11.6"
+  annotations:
+    # Human-readable compliance reference
+    kymaros.io/description: "DORA Article 11.6 — periodic backup restore validation"
+    kymaros.io/owner: "platform-team"
+spec:
+  backupSource:
+    provider: velero
+    backupName: "latest"
+    namespaces:
+      # Replace with your production namespace(s)
+      - name: your-production-namespace
+  schedule:
+    # Daily at 3:00 AM — outside business hours to minimize resource contention.
+    # DORA requires "periodic" testing; daily is the recommended cadence
+    # for critical functions. Adjust to weekly ("0 3 * * 0") for non-critical.
+    cron: "0 3 * * *"
+    timezone: "UTC"
+  sandbox:
+    namespacePrefix: "dora-test"
+    # 15 minutes TTL — enough for validation, cleaned up before business hours
+    ttl: "15m0s"
+    networkIsolation: "strict"
+    resourceQuota:
+      cpu: "4"
+      memory: "8Gi"
+  healthChecks:
+    policyRef: "dora-compliance-checks"
+    timeout: "10m0s"
+  sla:
+    # DORA critical function recovery target.
+    # Set this to your declared RTO from the ICT risk framework.
+    # Level 6 scoring (5 pts) measures actual vs this target.
+    maxRTO: "2h0m0s"
+    # Alert immediately if measured RTO exceeds target —
+    # this is a compliance violation that must be investigated.
+    alertOnExceed: true
+  # Keep 90 days of reports for quarterly audit evidence
+  historyLimit: 90

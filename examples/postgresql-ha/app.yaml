@@ -1,0 +1,125 @@
+---
+# Headless Service for StatefulSet DNS discovery
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: kymaros-demo-postgres
+  labels:
+    app: postgres
+spec:
+  clusterIP: None
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
+---
+# Read-write Service pointing to the primary only
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-primary
+  namespace: kymaros-demo-postgres
+  labels:
+    app: postgres
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app: postgres
+    role: primary
+---
+# ConfigMap with replication setup scripts
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-scripts
+  namespace: kymaros-demo-postgres
+data:
+  primary-init.sh: |
+    #!/bin/bash
+    set -e
+    # Create replication user if it doesn't exist
+    psql -U postgres -tc "SELECT 1 FROM pg_roles WHERE rolname='replicator'" | grep -q 1 || \
+      psql -U postgres -c "CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD '${REPLICATION_PASSWORD}';"
+    # Configure pg_hba for replication
+    echo "host replication replicator all md5" >> "$PGDATA/pg_hba.conf"
+    pg_ctl reload
+  postgresql.conf: |
+    listen_addresses = '*'
+    wal_level = replica
+    max_wal_senders = 3
+    hot_standby = on
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: kymaros-demo-postgres
+spec:
+  serviceName: postgres
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        # The primary label is set here for simplicity.
+        # In production, use a sidecar or operator for leader election.
+        role: primary
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: postgres-password
+            - name: REPLICATION_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: replication-password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: scripts
+              mountPath: /docker-entrypoint-initdb.d/primary-init.sh
+              subPath: primary-init.sh
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: scripts
+          configMap:
+            name: postgres-scripts
+            defaultMode: 0755
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi
+        # Uncomment and adjust for your cluster:
+        # storageClassName: standard    # GKE
+        # storageClassName: gp2         # EKS
+        # storageClassName: longhorn    # Longhorn

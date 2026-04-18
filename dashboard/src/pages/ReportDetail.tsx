@@ -633,7 +633,7 @@ function ReportDetail() {
       {chartData.length > 1 && (
         <div className="rounded-xl border border-navy-700 bg-navy-800 p-5">
           <h2 className="mb-4 text-lg font-semibold text-white">
-            Score History (30 days)
+            Score History (7 days)
           </h2>
           <ResponsiveContainer width="100%" height={240}>
             <LineChart

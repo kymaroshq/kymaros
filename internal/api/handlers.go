@@ -118,10 +118,10 @@ func HandleSummary(q *Queries) http.HandlerFunc {
 }
 
 // HandleDailyScores returns per-day score history.
-// GET /api/v1/summary/daily?days=30
+// GET /api/v1/summary/daily?days=7
 func HandleDailyScores(q *Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		days := 30
+		days := 7
 		if v := r.URL.Query().Get("days"); v != "" {
 			n, err := strconv.Atoi(v)
 			if err != nil || n < 1 {

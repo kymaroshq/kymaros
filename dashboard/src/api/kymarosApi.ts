@@ -76,7 +76,7 @@ export const kymarosApi = {
   getSummary: (): Promise<SummaryResponse> =>
     fetchJSON<SummaryResponse>(`${API_BASE}/summary`),
 
-  getDailyScores: (days = 30): Promise<DailySummary[]> =>
+  getDailyScores: (days = 7): Promise<DailySummary[]> =>
     fetchJSON<DailySummary[]>(`${API_BASE}/summary/daily?days=${days}`),
 
   getTests: (): Promise<TestResponse[]> =>

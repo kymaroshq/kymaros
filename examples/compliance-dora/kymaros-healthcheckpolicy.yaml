@@ -1,0 +1,58 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: HealthCheckPolicy
+metadata:
+  name: dora-compliance-checks
+  # Same namespace as the RestoreTest
+  namespace: your-production-namespace
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: compliance-dora
+    kymaros.io/compliance: dora
+spec:
+  checks:
+    # ── Adapt these checks to your application ──
+    #
+    # The checks below are templates. Replace labels, services,
+    # and resources with your actual workload configuration.
+
+    # Level 3 — Pod startup: are your application pods running?
+    - name: app-pods-ready
+      type: podStatus
+      podStatus:
+        # Replace with your application's pod labels
+        labelSelector:
+          app: your-app
+        minReady: 1
+        timeout: "5m0s"
+
+    # Level 4 — Health check: does your application respond?
+    - name: app-http-check
+      type: httpGet
+      httpGet:
+        # Replace with your application's service and health endpoint
+        service: your-app-service
+        port: 8080
+        path: /healthz
+        expectedStatus: 200
+        timeout: "30s"
+        retries: 5
+
+    # Level 4 — Health check: is your database reachable?
+    - name: database-tcp
+      type: tcpSocket
+      tcpSocket:
+        # Replace with your database service
+        service: your-database
+        port: 5432
+        timeout: "30s"
+
+    # Level 4 — Health check: are critical secrets and configs present?
+    - name: critical-resources
+      type: resourceExists
+      resourceExists:
+        resources:
+          # Replace with resources critical to your application
+          - kind: Secret
+            name: your-app-credentials
+          - kind: ConfigMap
+            name: your-app-config

@@ -1,0 +1,31 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreTest
+metadata:
+  name: redis-sentinel-test
+  namespace: kymaros-demo-redis
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: redis-sentinel
+spec:
+  backupSource:
+    provider: velero
+    backupName: "latest"
+    namespaces:
+      - name: kymaros-demo-redis
+  schedule:
+    cron: "0 4 * * *"
+    timezone: "UTC"
+  sandbox:
+    namespacePrefix: "kymaros-demo-redis"
+    ttl: "10m0s"
+    networkIsolation: "strict"
+    resourceQuota:
+      cpu: "2"
+      memory: "1Gi"
+  healthChecks:
+    policyRef: "redis-sentinel-checks"
+    timeout: "5m0s"
+  sla:
+    maxRTO: "6m0s"
+    alertOnExceed: true
+  historyLimit: 10

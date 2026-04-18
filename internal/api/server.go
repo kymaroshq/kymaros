@@ -32,8 +32,19 @@ import (
 )
 
 // RouteRegistrar is a function that registers additional routes on the mux.
-// Used by kymaros-pro to add premium API endpoints.
+// External packages can use RegisterGlobalRoutes to add endpoints via init().
 type RouteRegistrar func(mux *http.ServeMux, q *Queries)
+
+// globalRouteRegistrars holds registrars added via RegisterGlobalRoutes
+// (typically by external plugin init() functions).
+var globalRouteRegistrars []RouteRegistrar
+
+// RegisterGlobalRoutes adds a RouteRegistrar at the package level.
+// Registered routes are applied during Server.Start alongside any
+// instance-level registrars added via Server.RegisterRoutes.
+func RegisterGlobalRoutes(r RouteRegistrar) {
+	globalRouteRegistrars = append(globalRouteRegistrars, r)
+}
 
 // Server is the Kymaros API and static-file HTTP server.
 type Server struct {
@@ -58,7 +69,7 @@ func NewServer(c client.Client, port int, staticDir string, rc *rest.Config) *Se
 }
 
 // RegisterRoutes adds a RouteRegistrar that will be called during Start
-// to register additional API routes (e.g. from kymaros-pro).
+// to register additional API routes.
 func (s *Server) RegisterRoutes(r RouteRegistrar) {
 	s.extraRoutes = append(s.extraRoutes, r)
 }
@@ -90,8 +101,11 @@ func (s *Server) Start(ctx context.Context) error {
 	mux.HandleFunc("GET /api/v1/config/sandbox", HandleGetSandboxConfig(q))
 	mux.HandleFunc("POST /api/v1/config/sandbox/cleanup", HandleCleanupOrphanSandboxes(q))
 
-	// --- Pro routes (registered by kymaros-pro if present) ---
+	// --- Extension routes (registered via RegisterRoutes or RegisterGlobalRoutes) ---
 	for _, register := range s.extraRoutes {
+		register(mux, q)
+	}
+	for _, register := range globalRouteRegistrars {
 		register(mux, q)
 	}
 

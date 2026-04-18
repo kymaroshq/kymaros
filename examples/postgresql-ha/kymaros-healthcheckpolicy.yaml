@@ -1,0 +1,48 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: HealthCheckPolicy
+metadata:
+  name: postgres-ha-checks
+  namespace: kymaros-demo-postgres
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: postgresql-ha
+spec:
+  checks:
+    # Level 3 — Pod startup: are both PostgreSQL pods running?
+    - name: postgres-pods-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: postgres
+        minReady: 2
+        timeout: "3m0s"
+
+    # Level 4 — Health check: is PostgreSQL accepting connections?
+    - name: postgres-tcp
+      type: tcpSocket
+      tcpSocket:
+        service: postgres
+        port: 5432
+        timeout: "30s"
+
+    # Level 4 — Health check: is the primary ready for queries?
+    - name: postgres-isready
+      type: exec
+      exec:
+        podSelector:
+          app: postgres
+        command: ["pg_isready", "-U", "postgres"]
+        successExitCode: 0
+        timeout: "30s"
+
+    # Level 4 — Health check: are credentials and data present?
+    - name: critical-resources
+      type: resourceExists
+      resourceExists:
+        resources:
+          - kind: Secret
+            name: postgres-credentials
+          - kind: PersistentVolumeClaim
+            name: postgres-data-postgres-0
+          - kind: PersistentVolumeClaim
+            name: postgres-data-postgres-1

@@ -310,7 +310,7 @@ function Dashboard() {
   const summary = useSummary();
   const tests = useTests();
   const latestReports = useLatestReports();
-  const dailyScores = useDailyScores(30);
+  const dailyScores = useDailyScores(7);
   const alerts = useAlerts(48);
   const upcoming = useUpcoming();
 
@@ -691,7 +691,7 @@ function Dashboard() {
       ) : chartData.length > 0 ? (
         <div className="rounded-xl border border-navy-700 bg-navy-800 p-5">
           <h2 className="mb-4 text-lg font-semibold text-white">
-            Score Trend (30 days)
+            Score Trend (7 days)
           </h2>
           <ResponsiveContainer width="100%" height={260}>
             <AreaChart

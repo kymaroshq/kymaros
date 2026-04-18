@@ -1,0 +1,16 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: microservices-demo
+  namespace: velero
+spec:
+  # Daily at 2:00 AM UTC
+  schedule: "0 2 * * *"
+  template:
+    # All three namespaces backed up together
+    includedNamespaces:
+      - kymaros-demo-ms-api
+      - kymaros-demo-ms-db
+      - kymaros-demo-ms-cache
+    defaultVolumesToFsBackup: true
+    ttl: 168h0m0s  # Keep backups for 7 days

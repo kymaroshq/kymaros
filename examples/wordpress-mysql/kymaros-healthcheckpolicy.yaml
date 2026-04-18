@@ -1,0 +1,48 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: HealthCheckPolicy
+metadata:
+  name: wordpress-mysql-checks
+  namespace: kymaros-demo-wordpress
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: wordpress-mysql
+spec:
+  checks:
+    # Level 3 — Pod startup: is MySQL running?
+    - name: mysql-pod-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: mysql
+        minReady: 1
+        timeout: "3m0s"
+
+    # Level 3 — Pod startup: is WordPress running?
+    - name: wordpress-pod-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: wordpress
+        minReady: 1
+        timeout: "3m0s"
+
+    # Level 4 — Health check: can WordPress serve the login page?
+    - name: wordpress-http-check
+      type: httpGet
+      httpGet:
+        service: wordpress
+        port: 80
+        path: /wp-login.php
+        expectedStatus: 200
+        timeout: "30s"
+        retries: 3
+
+    # Level 4 — Health check: are critical secrets and PVCs present?
+    - name: critical-resources
+      type: resourceExists
+      resourceExists:
+        resources:
+          - kind: Secret
+            name: wordpress-mysql-credentials
+          - kind: PersistentVolumeClaim
+            name: mysql-data-mysql-0

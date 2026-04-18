@@ -1,0 +1,93 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: HealthCheckPolicy
+metadata:
+  name: microservices-checks
+  namespace: kymaros-demo-ms-api
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: microservices-app
+spec:
+  checks:
+    # Level 3 — Pod startup: API gateway
+    - name: api-pod-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: api
+        minReady: 1
+        timeout: "2m0s"
+
+    # Level 3 — Pod startup: database
+    - name: postgres-pod-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: postgres
+        minReady: 1
+        timeout: "2m0s"
+
+    # Level 3 — Pod startup: cache
+    - name: redis-pod-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: redis
+        minReady: 1
+        timeout: "2m0s"
+
+    # Level 4 — Health check: API serves HTTP 200
+    - name: api-http-check
+      type: httpGet
+      httpGet:
+        service: api
+        port: 80
+        path: /healthz
+        expectedStatus: 200
+        timeout: "30s"
+        retries: 3
+
+    # Level 4 — Health check: database accepts connections
+    - name: postgres-tcp
+      type: tcpSocket
+      tcpSocket:
+        service: postgres
+        port: 5432
+        timeout: "30s"
+
+    # Level 4 — Health check: cache accepts connections
+    - name: redis-tcp
+      type: tcpSocket
+      tcpSocket:
+        service: redis
+        port: 6379
+        timeout: "30s"
+
+    # Level 5 — Cross-namespace: API can resolve database DNS
+    - name: cross-ns-db-dns
+      type: exec
+      exec:
+        podSelector:
+          app: api
+        command: ["nslookup", "postgres.kymaros-demo-ms-db.svc.cluster.local"]
+        successExitCode: 0
+        timeout: "15s"
+
+    # Level 5 — Cross-namespace: API can resolve cache DNS
+    - name: cross-ns-cache-dns
+      type: exec
+      exec:
+        podSelector:
+          app: api
+        command: ["nslookup", "redis.kymaros-demo-ms-cache.svc.cluster.local"]
+        successExitCode: 0
+        timeout: "15s"
+
+    # Level 4 — Health check: critical resources present
+    - name: critical-resources
+      type: resourceExists
+      resourceExists:
+        resources:
+          - kind: Secret
+            name: db-credentials
+          - kind: ConfigMap
+            name: api-config

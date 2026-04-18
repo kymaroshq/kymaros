@@ -1,0 +1,63 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: HealthCheckPolicy
+metadata:
+  name: redis-sentinel-checks
+  namespace: kymaros-demo-redis
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: redis-sentinel
+spec:
+  checks:
+    # Level 3 — Pod startup: are all Redis pods running?
+    - name: redis-pods-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: redis
+        minReady: 3
+        timeout: "3m0s"
+
+    # Level 3 — Pod startup: are all Sentinel pods running?
+    - name: sentinel-pods-ready
+      type: podStatus
+      podStatus:
+        labelSelector:
+          app: redis-sentinel
+        minReady: 3
+        timeout: "3m0s"
+
+    # Level 4 — Health check: is Redis accepting connections?
+    - name: redis-tcp
+      type: tcpSocket
+      tcpSocket:
+        service: redis
+        port: 6379
+        timeout: "30s"
+
+    # Level 4 — Health check: is Sentinel accepting connections?
+    - name: sentinel-tcp
+      type: tcpSocket
+      tcpSocket:
+        service: redis-sentinel
+        port: 26379
+        timeout: "30s"
+
+    # Level 4 — Health check: does Redis respond to PING?
+    - name: redis-ping
+      type: exec
+      exec:
+        podSelector:
+          app: redis
+        command: ["redis-cli", "ping"]
+        successExitCode: 0
+        timeout: "10s"
+
+    # Level 4 — Health check: does Sentinel know the master?
+    - name: sentinel-masters
+      type: exec
+      exec:
+        podSelector:
+          app: redis-sentinel
+        command: ["redis-cli", "-p", "26379", "sentinel", "masters"]
+        successExitCode: 0
+        timeout: "10s"

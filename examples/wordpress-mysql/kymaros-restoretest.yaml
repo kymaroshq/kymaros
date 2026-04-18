@@ -1,0 +1,32 @@
+apiVersion: restore.kymaros.io/v1alpha1
+kind: RestoreTest
+metadata:
+  name: wordpress-mysql-test
+  namespace: kymaros-demo-wordpress
+  labels:
+    app.kubernetes.io/name: kymaros
+    kymaros.io/example: wordpress-mysql
+spec:
+  backupSource:
+    provider: velero
+    backupName: "latest"
+    namespaces:
+      - name: kymaros-demo-wordpress
+  schedule:
+    # Nightly at 4:00 AM — 2 hours after the backup runs
+    cron: "0 4 * * *"
+    timezone: "UTC"
+  sandbox:
+    namespacePrefix: "kymaros-demo-wp"
+    ttl: "10m0s"
+    networkIsolation: "strict"
+    resourceQuota:
+      cpu: "2"
+      memory: "2Gi"
+  healthChecks:
+    policyRef: "wordpress-mysql-checks"
+    timeout: "5m0s"
+  sla:
+    maxRTO: "5m0s"
+    alertOnExceed: true
+  historyLimit: 10

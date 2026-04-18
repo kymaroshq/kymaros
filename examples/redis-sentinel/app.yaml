@@ -1,0 +1,172 @@
+---
+# ConfigMap for Redis configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: kymaros-demo-redis
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    protected-mode no
+    port 6379
+    dir /data
+    appendonly yes
+    appendfsync everysec
+  sentinel.conf: |
+    port 26379
+    sentinel monitor mymaster redis-0.redis.kymaros-demo-redis.svc.cluster.local 6379 2
+    sentinel down-after-milliseconds mymaster 5000
+    sentinel failover-timeout mymaster 10000
+    sentinel parallel-syncs mymaster 1
+---
+# Headless Service for Redis StatefulSet
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: kymaros-demo-redis
+  labels:
+    app: redis
+spec:
+  clusterIP: None
+  ports:
+    - name: redis
+      port: 6379
+    - name: sentinel
+      port: 26379
+  selector:
+    app: redis
+---
+# Redis StatefulSet — 1 master + 2 replicas
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: kymaros-demo-redis
+spec:
+  serviceName: redis
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+          command:
+            - sh
+            - -c
+            - |
+              # First pod (redis-0) is the initial master
+              if [ "$(hostname)" = "redis-0" ]; then
+                redis-server /etc/redis/redis.conf
+              else
+                redis-server /etc/redis/redis.conf --replicaof redis-0.redis.kymaros-demo-redis.svc.cluster.local 6379
+              fi
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+            - name: config
+              mountPath: /etc/redis
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: redis-config
+            items:
+              - key: redis.conf
+                path: redis.conf
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 500Mi
+        # Uncomment and adjust for your cluster:
+        # storageClassName: standard    # GKE
+        # storageClassName: gp2         # EKS
+---
+# Sentinel Deployment — monitors Redis and handles failover
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-sentinel
+  namespace: kymaros-demo-redis
+  labels:
+    app: redis-sentinel
+spec:
+  ports:
+    - port: 26379
+  selector:
+    app: redis-sentinel
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-sentinel
+  namespace: kymaros-demo-redis
+spec:
+  serviceName: redis-sentinel
+  replicas: 3
+  selector:
+    matchLabels:
+      app: redis-sentinel
+  template:
+    metadata:
+      labels:
+        app: redis-sentinel
+    spec:
+      containers:
+        - name: sentinel
+          image: redis:7-alpine
+          ports:
+            - containerPort: 26379
+          command:
+            - sh
+            - -c
+            - |
+              # Copy config so Sentinel can rewrite it at runtime
+              cp /etc/redis/sentinel.conf /tmp/sentinel.conf
+              redis-sentinel /tmp/sentinel.conf
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/redis
+          readinessProbe:
+            exec:
+              command: ["redis-cli", "-p", "26379", "ping"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: redis-config
+            items:
+              - key: sentinel.conf
+                path: sentinel.conf
