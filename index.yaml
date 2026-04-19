@@ -4,6 +4,64 @@ entries:
   - annotations:
       artifacthub.io/category: security
       artifacthub.io/changes: |
+        - kind: added
+          description: Plugin architecture — public extension points for adapters, notifiers, and API routes
+        - kind: added
+          description: 5 real-world examples (WordPress, PostgreSQL HA, Redis Sentinel, microservices, DORA compliance)
+        - kind: changed
+          description: Extract main() into importable pkg/app.Run() for external modules
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+      artifacthub.io/signKey: |
+        fingerprint: 2FBF225C052F2603E7D2F062F5E10C1897987022
+        url: https://kymaros.io/kymaros-gpg.pub
+    apiVersion: v2
+    appVersion: 0.6.8
+    created: "2026-04-19T10:06:07.580497897+02:00"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: f4b1b271b002e9560be768f8e75a4beba2e34e8826e898b9186757d47fb10331
+    home: https://kymaros.io
+    icon: https://kymaros.io/kymaros-logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.8.tgz
+    version: 0.6.8
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
         - kind: security
           description: Fix CVE-2026-39883 — upgrade go.opentelemetry.io/otel/sdk to v1.43.0
         - kind: added
@@ -29,7 +87,7 @@ entries:
         url: https://kymaros.io/kymaros-gpg.pub
     apiVersion: v2
     appVersion: 0.6.7
-    created: "2026-04-11T00:53:59.862554819+02:00"
+    created: "2026-04-19T10:06:07.579543948+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -81,7 +139,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.6
-    created: "2026-04-11T00:53:59.862062061+02:00"
+    created: "2026-04-19T10:06:07.578248084+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -143,7 +201,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.5
-    created: "2026-04-11T00:53:59.861471593+02:00"
+    created: "2026-04-19T10:06:07.576825797+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -199,7 +257,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.4
-    created: "2026-04-11T00:53:59.859810654+02:00"
+    created: "2026-04-19T10:06:07.575353535+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -229,4 +287,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.4.tgz
     version: 0.6.4
-generated: "2026-04-11T00:53:59.859024245+02:00"
+generated: "2026-04-19T10:06:07.573766743+02:00"
