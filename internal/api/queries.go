@@ -155,7 +155,7 @@ func (q *Queries) GetSummary(ctx context.Context) (SummaryResponse, error) {
 	var rtoCount int
 	for i := range latestReports {
 		measured := latestReports[i].Status.RTO.Measured.Duration
-		if measured > 0 {
+		if measured > 0 && measured < 24*time.Hour {
 			totalRTO += measured
 			rtoCount++
 		}

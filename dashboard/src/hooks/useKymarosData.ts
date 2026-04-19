@@ -96,31 +96,31 @@ export function useApiData<T>(
 // Specific hooks
 
 export function useSummary(): ApiState<SummaryResponse> {
-  return useApiData(() => kymarosApi.getSummary());
+  return useApiData(() => kymarosApi.getSummary(), 0);
 }
 
 export function useDailyScores(days = 7): ApiState<DailySummary[]> {
-  return useApiData(() => kymarosApi.getDailyScores(days), 300_000, [days]);
+  return useApiData(() => kymarosApi.getDailyScores(days), 0, [days]);
 }
 
 export function useTests(): ApiState<TestResponse[]> {
-  return useApiData(() => kymarosApi.getTests());
+  return useApiData(() => kymarosApi.getTests(), 0);
 }
 
 export function useLatestReports(): ApiState<RestoreReport[]> {
-  return useApiData(() => kymarosApi.getLatestReports());
+  return useApiData(() => kymarosApi.getLatestReports(), 0);
 }
 
 export function useReportsForTest(name: string): ApiState<RestoreReport[]> {
-  return useApiData(() => kymarosApi.getReportsForTest(name), 60_000, [name]);
+  return useApiData(() => kymarosApi.getReportsForTest(name), 0, [name]);
 }
 
 export function useAlerts(hours = 48): ApiState<Alert[]> {
-  return useApiData(() => kymarosApi.getAlerts(hours), 30_000, [hours]);
+  return useApiData(() => kymarosApi.getAlerts(hours), 0, [hours]);
 }
 
 export function useUpcoming(): ApiState<UpcomingTest[]> {
-  return useApiData(() => kymarosApi.getUpcoming(), 60_000);
+  return useApiData(() => kymarosApi.getUpcoming(), 0);
 }
 
 export function useReportLogs(reportName: string): ApiState<ReportLogsResponse> {

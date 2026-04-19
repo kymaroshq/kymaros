@@ -35,8 +35,9 @@ import (
 // External packages can use RegisterGlobalRoutes to add endpoints via init().
 type RouteRegistrar func(mux *http.ServeMux, q *Queries)
 
-// globalRouteRegistrars holds registrars added via RegisterGlobalRoutes
-// (typically by external plugin init() functions).
+// globalRouteRegistrars holds registrars added via RegisterGlobalRoutes.
+// This slice is populated during init() which the Go runtime executes
+// sequentially — no mutex is needed.
 var globalRouteRegistrars []RouteRegistrar
 
 // RegisterGlobalRoutes adds a RouteRegistrar at the package level.
@@ -130,7 +131,9 @@ func (s *Server) Start(ctx context.Context) error {
 	// Respect context cancellation.
 	go func() {
 		<-ctx.Done()
-		_ = s.Shutdown(context.Background())
+		shutCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		_ = s.Shutdown(shutCtx)
 	}()
 
 	if err := s.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {

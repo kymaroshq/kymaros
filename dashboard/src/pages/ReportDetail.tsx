@@ -66,7 +66,16 @@ function formatDuration(seconds: number): string {
 
 function formatTimeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
-  if (diff < 0) return 'just now';
+  if (diff < 0) {
+    const seconds = Math.floor(-diff / 1000);
+    if (seconds < 60) return `in ${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `in ${minutes}m`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `in ${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `in ${days}d`;
+  }
   const seconds = Math.floor(diff / 1000);
   if (seconds < 60) return `${seconds}s ago`;
   const minutes = Math.floor(seconds / 60);
@@ -445,7 +454,7 @@ function ReportDetail() {
           </p>
         </div>
         <span className={`font-mono text-4xl font-bold ${scoreColor(st?.score ?? 0)}`}>
-          {st?.score ?? '--'}
+          {st?.score != null ? Math.round(st.score) : '--'}
         </span>
       </div>
 
@@ -453,7 +462,7 @@ function ReportDetail() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           label="Score"
-          value={st?.score ?? 0}
+          value={Math.round(st?.score ?? 0)}
           trend={scoreTrend}
           status={metricStatus(st?.score ?? 0)}
           icon={<Activity className="h-5 w-5" />}

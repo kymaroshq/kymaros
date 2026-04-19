@@ -1,3 +1,5 @@
+# NOTE: This file contains placeholder values (your-*).
+# You MUST customise all fields before applying. See README.md.
 apiVersion: restore.kymaros.io/v1alpha1
 kind: RestoreTest
 metadata:

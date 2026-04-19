@@ -22,7 +22,6 @@ package app
 import (
 	"crypto/tls"
 	"flag"
-	"fmt"
 	"log/slog"
 	"os"
 
@@ -110,7 +109,9 @@ func Run() {
 		Development: true,
 	}
 	opts.BindFlags(flag.CommandLine)
-	flag.Parse()
+	if !flag.Parsed() {
+		flag.Parse()
+	}
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
@@ -213,7 +214,7 @@ func Run() {
 
 	setupLog.Info("Starting manager")
 	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
-		setupLog.Error(err, fmt.Sprintf("Failed to run manager"))
+		setupLog.Error(err, "Failed to run manager")
 		os.Exit(1)
 	}
 }

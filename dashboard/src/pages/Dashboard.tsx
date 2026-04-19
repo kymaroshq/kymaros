@@ -77,7 +77,17 @@ function formatDuration(seconds: number): string {
 
 function formatTimeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
-  if (diff < 0) return 'just now';
+  if (diff < 0) {
+    // Future date — format as "in Xm", "in Xh", etc.
+    const seconds = Math.floor(-diff / 1000);
+    if (seconds < 60) return `in ${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `in ${minutes}m`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `in ${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `in ${days}d`;
+  }
   const seconds = Math.floor(diff / 1000);
   if (seconds < 60) return `${seconds}s ago`;
   const minutes = Math.floor(seconds / 60);
@@ -653,7 +663,7 @@ function Dashboard() {
                       {row.namespace || row.name}
                     </td>
                     <td className={`py-3 pr-4 font-mono font-bold ${scoreColor(row.score)}`}>
-                      {row.score}
+                      {Math.round(row.score)}
                     </td>
                     <td className="py-3 pr-4">
                       <StatusBadge status={scoreStatus(row.result)} size="sm" />
@@ -770,7 +780,8 @@ function Dashboard() {
               {alerts.data.slice(0, 10).map((alert, idx) => (
                 <div
                   key={`${alert.testName}-${alert.timestamp}-${idx}`}
-                  className="flex items-start gap-3 rounded-lg border border-navy-700/50 bg-navy-900/50 p-3"
+                  className="flex cursor-pointer items-start gap-3 rounded-lg border border-navy-700/50 bg-navy-900/50 p-3 transition-colors hover:border-navy-600 hover:bg-navy-800/80"
+                  onClick={() => navigate(`/reports/${alert.testName}`)}
                 >
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
                   <div className="min-w-0 flex-1">
@@ -785,7 +796,7 @@ function Dashboard() {
                   <span
                     className={`font-mono text-sm font-bold ${scoreColor(alert.score)}`}
                   >
-                    {alert.score}
+                    {Math.round(alert.score)}
                   </span>
                 </div>
               ))}
@@ -815,7 +826,8 @@ function Dashboard() {
               {upcoming.data.map((test) => (
                 <div
                   key={test.name}
-                  className="flex items-center justify-between rounded-lg border border-navy-700/50 bg-navy-900/50 p-3"
+                  className="flex cursor-pointer items-center justify-between rounded-lg border border-navy-700/50 bg-navy-900/50 p-3 transition-colors hover:border-navy-600 hover:bg-navy-800/80"
+                  onClick={() => navigate(`/reports/${test.name}`)}
                 >
                   <div>
                     <p className="text-sm font-medium text-white">
@@ -831,7 +843,7 @@ function Dashboard() {
                     <p
                       className={`mt-0.5 font-mono text-sm font-bold ${scoreColor(test.lastScore)}`}
                     >
-                      {test.lastScore}
+                      {Math.round(test.lastScore)}
                     </p>
                   </div>
                 </div>

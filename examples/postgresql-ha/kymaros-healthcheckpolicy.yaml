@@ -2,7 +2,7 @@ apiVersion: restore.kymaros.io/v1alpha1
 kind: HealthCheckPolicy
 metadata:
   name: postgres-ha-checks
-  namespace: kymaros-demo-postgres
+  namespace: kymaros-system
   labels:
     app.kubernetes.io/name: kymaros
     kymaros.io/example: postgresql-ha

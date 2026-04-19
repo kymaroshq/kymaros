@@ -2,7 +2,7 @@ apiVersion: restore.kymaros.io/v1alpha1
 kind: RestoreTest
 metadata:
   name: microservices-test
-  namespace: kymaros-demo-ms-api
+  namespace: kymaros-system
   labels:
     app.kubernetes.io/name: kymaros
     kymaros.io/example: microservices-app

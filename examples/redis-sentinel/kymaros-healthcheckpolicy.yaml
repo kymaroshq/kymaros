@@ -2,7 +2,7 @@ apiVersion: restore.kymaros.io/v1alpha1
 kind: HealthCheckPolicy
 metadata:
   name: redis-sentinel-checks
-  namespace: kymaros-demo-redis
+  namespace: kymaros-system
   labels:
     app.kubernetes.io/name: kymaros
     kymaros.io/example: redis-sentinel

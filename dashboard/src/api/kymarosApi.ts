@@ -15,7 +15,7 @@ import type {
 
 const API_BASE = '/api/v1';
 
-function getAuthToken(): string | null {
+export function getAuthToken(): string | null {
   return localStorage.getItem('kymaros_api_token');
 }
 
@@ -67,7 +67,16 @@ async function fetchMutate<T>(method: string, url: string, body?: unknown): Prom
     headers,
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) throw new ApiError(res.status, await res.text());
+  if (!res.ok) {
+    let detail = `HTTP ${res.status}`;
+    try {
+      const body = await res.json();
+      detail = body.message ?? body.error ?? JSON.stringify(body);
+    } catch {
+      try { const t = await res.text(); if (t) detail = t; } catch { /* ignore */ }
+    }
+    throw new ApiError(res.status, detail);
+  }
   if (res.status === 204) return {} as T;
   return res.json();
 }

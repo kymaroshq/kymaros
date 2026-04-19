@@ -2,7 +2,7 @@ apiVersion: restore.kymaros.io/v1alpha1
 kind: RestoreTest
 metadata:
   name: redis-sentinel-test
-  namespace: kymaros-demo-redis
+  namespace: kymaros-system
   labels:
     app.kubernetes.io/name: kymaros
     kymaros.io/example: redis-sentinel
@@ -16,7 +16,7 @@ spec:
     cron: "0 4 * * *"
     timezone: "UTC"
   sandbox:
-    namespacePrefix: "kymaros-demo-redis"
+    namespacePrefix: "kymaros-demo-rdis"
     ttl: "10m0s"
     networkIsolation: "strict"
     resourceQuota:

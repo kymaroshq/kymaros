@@ -401,7 +401,7 @@ func HandleGetNotificationConfig(q *Queries) http.HandlerFunc {
 // POST /api/v1/config/notifications/test
 func HandleTestNotification(q *Queries) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, http.StatusOK, map[string]string{"message": "test notification sent"})
+		writeJSON(w, http.StatusNotImplemented, map[string]string{"message": "test notifications not yet implemented"})
 	}
 }
 

@@ -2,7 +2,7 @@ apiVersion: restore.kymaros.io/v1alpha1
 kind: HealthCheckPolicy
 metadata:
   name: wordpress-mysql-checks
-  namespace: kymaros-demo-wordpress
+  namespace: kymaros-system
   labels:
     app.kubernetes.io/name: kymaros
     kymaros.io/example: wordpress-mysql
