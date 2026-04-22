@@ -4,6 +4,61 @@ entries:
   - annotations:
       artifacthub.io/category: security
       artifacthub.io/changes: |
+        - kind: security
+          description: Bump github.com/moby/spdystream v0.5.0 to v0.5.1 (CVE-2026-35469)
+      artifacthub.io/containsSecurityUpdates: "true"
+      artifacthub.io/license: Apache-2.0
+      artifacthub.io/links: |
+        - name: Documentation
+          url: https://docs.kymaros.io
+        - name: Website
+          url: https://kymaros.io
+      artifacthub.io/operator: "true"
+      artifacthub.io/operatorCapabilities: Full Lifecycle
+      artifacthub.io/prerelease: "false"
+      artifacthub.io/screenshots: |
+        - title: Dashboard Overview
+          url: https://kymaros.io/screenshots/dashboard-overview.png
+        - title: Report Detail
+          url: https://kymaros.io/screenshots/report-detail.png
+      artifacthub.io/signKey: |
+        fingerprint: 2FBF225C052F2603E7D2F062F5E10C1897987022
+        url: https://kymaros.io/kymaros-gpg.pub
+    apiVersion: v2
+    appVersion: 0.6.9
+    created: "2026-04-22T18:19:43.030041167+02:00"
+    description: Kubernetes operator that validates backup restorability continuously
+      — automated restore testing with scoring, health checks, and SLA compliance
+      tracking.
+    digest: c4db9002f6c2998943e964fd758133fd8b6636648ca433d476827f9e2bb0ab38
+    home: https://kymaros.io
+    icon: https://kymaros.io/kymaros-logo.svg
+    keywords:
+    - kubernetes
+    - backup
+    - velero
+    - disaster-recovery
+    - restore
+    - validation
+    - operator
+    - compliance
+    - sre
+    - helm
+    - prometheus
+    - soc2
+    maintainers:
+    - name: kymaroshq
+      url: https://github.com/kymaroshq
+    name: kymaros
+    sources:
+    - https://github.com/kymaroshq/kymaros
+    type: application
+    urls:
+    - https://charts.kymaros.io/kymaros-0.6.9.tgz
+    version: 0.6.9
+  - annotations:
+      artifacthub.io/category: security
+      artifacthub.io/changes: |
         - kind: added
           description: Plugin architecture — public extension points for adapters, notifiers, and API routes
         - kind: added
@@ -29,7 +84,7 @@ entries:
         url: https://kymaros.io/kymaros-gpg.pub
     apiVersion: v2
     appVersion: 0.6.8
-    created: "2026-04-19T10:07:20.545034751+02:00"
+    created: "2026-04-22T18:19:43.029043044+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -87,7 +142,7 @@ entries:
         url: https://kymaros.io/kymaros-gpg.pub
     apiVersion: v2
     appVersion: 0.6.7
-    created: "2026-04-19T10:07:20.544075392+02:00"
+    created: "2026-04-22T18:19:43.02800772+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -139,7 +194,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.6
-    created: "2026-04-19T10:07:20.543109049+02:00"
+    created: "2026-04-22T18:19:43.026678683+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -201,7 +256,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.5
-    created: "2026-04-19T10:07:20.54211343+02:00"
+    created: "2026-04-22T18:19:43.025570249+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -257,7 +312,7 @@ entries:
           url: https://kymaros.io/screenshots/report-detail.png
     apiVersion: v2
     appVersion: 0.6.4
-    created: "2026-04-19T10:07:20.540752261+02:00"
+    created: "2026-04-22T18:19:43.024399034+02:00"
     description: Kubernetes operator that validates backup restorability continuously
       — automated restore testing with scoring, health checks, and SLA compliance
       tracking.
@@ -287,4 +342,4 @@ entries:
     urls:
     - https://charts.kymaros.io/kymaros-0.6.4.tgz
     version: 0.6.4
-generated: "2026-04-19T10:07:20.539500611+02:00"
+generated: "2026-04-22T18:19:43.023119342+02:00"
