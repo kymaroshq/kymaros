@@ -337,31 +337,8 @@
           <th>Type</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td><strong>kymaros</strong></td>
-          <td><span class="badge">0.6.7</span></td>
-          <td>0.6.7</td>
-          <td>Application</td>
-        </tr>
-        <tr>
-          <td><strong>kymaros</strong></td>
-          <td><span class="badge">0.6.6</span></td>
-          <td>0.6.6</td>
-          <td>Application</td>
-        </tr>
-        <tr>
-          <td><strong>kymaros</strong></td>
-          <td><span class="badge">0.6.5</span></td>
-          <td>0.6.5</td>
-          <td>Application</td>
-        </tr>
-        <tr>
-          <td><strong>kymaros</strong></td>
-          <td><span class="badge">0.6.4</span></td>
-          <td>0.6.4</td>
-          <td>Application</td>
-        </tr>
+      <tbody id="chartBody">
+        <tr><td colspan="4" style="color:var(--text-muted);text-align:center;padding:2rem">Loading versions...</td></tr>
       </tbody>
     </table>
   </section>
@@ -385,6 +362,39 @@
         setTimeout(() => btn.textContent = 'Copy', 2000);
       });
     }
+
+    // Parse index.yaml to populate chart versions table
+    fetch('index.yaml')
+      .then(r => r.text())
+      .then(yaml => {
+        const entries = [];
+        const lines = yaml.split('\n');
+        let cur = null;
+        for (const line of lines) {
+          if (/^\s+- apiVersion:/.test(line)) { cur = {}; entries.push(cur); }
+          if (cur) {
+            const vm = line.match(/^\s{4}version:\s+(.+)/);
+            const am = line.match(/^\s{4}appVersion:\s+"?([^"]+)"?/);
+            const tm = line.match(/^\s{4}type:\s+(.+)/);
+            if (vm) cur.version = vm[1].trim();
+            if (am) cur.appVersion = am[1].trim();
+            if (tm) cur.type = tm[1].trim();
+          }
+        }
+        const tbody = document.getElementById('chartBody');
+        tbody.innerHTML = entries
+          .filter(e => e.version)
+          .map(e => `<tr>
+            <td><strong>kymaros</strong></td>
+            <td><span class="badge">${e.version}</span></td>
+            <td>${e.appVersion || e.version}</td>
+            <td>${e.type || 'Application'}</td>
+          </tr>`).join('');
+      })
+      .catch(() => {
+        document.getElementById('chartBody').innerHTML =
+          '<tr><td colspan="4" style="color:var(--text-muted);text-align:center">Failed to load versions</td></tr>';
+      });
   </script>
 
 </body>
