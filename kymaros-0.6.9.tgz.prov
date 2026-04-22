@@ -1,0 +1,73 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  artifacthub.io/category: security
+  artifacthub.io/changes: |
+    - kind: security
+      description: Bump github.com/moby/spdystream v0.5.0 to v0.5.1 (CVE-2026-35469)
+  artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/license: Apache-2.0
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://docs.kymaros.io
+    - name: Website
+      url: https://kymaros.io
+  artifacthub.io/operator: "true"
+  artifacthub.io/operatorCapabilities: Full Lifecycle
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/screenshots: |
+    - title: Dashboard Overview
+      url: https://kymaros.io/screenshots/dashboard-overview.png
+    - title: Report Detail
+      url: https://kymaros.io/screenshots/report-detail.png
+  artifacthub.io/signKey: |
+    fingerprint: 2FBF225C052F2603E7D2F062F5E10C1897987022
+    url: https://kymaros.io/kymaros-gpg.pub
+apiVersion: v2
+appVersion: 0.6.9
+description: Kubernetes operator that validates backup restorability continuously
+  — automated restore testing with scoring, health checks, and SLA compliance tracking.
+home: https://kymaros.io
+icon: https://kymaros.io/kymaros-logo.svg
+keywords:
+- - kubernetes
+- - backup
+- - velero
+- - disaster-recovery
+- - restore
+- - validation
+- - operator
+- - compliance
+- - sre
+- - helm
+- - prometheus
+- - soc2
+maintainers:
+- - name: kymaroshq
+  url: https://github.com/kymaroshq
+name: kymaros
+sources:
+- - https://github.com/kymaroshq/kymaros
+type: application
+version: 0.6.9
+
+...
+files:
+  kymaros-0.6.9.tgz: sha256:0065ea69f677a5ab17e853db0336ce1804f1d3f604068e06dcfd0e8da9f793c8
+-----BEGIN PGP SIGNATURE-----
+
+wsFcBAEBCgAQBQJp6PjcCRD14QwYl5hwIgAAi98QAC9yqiwxu1W96R6oiMuKV6CQ
+aF+sqZlqQBp4jv3oTWRLa4ozLAtaNWukosCMTFv4wVWBqiwn20mQbbz81K1GauPW
+AvkC3IShfloeboUjM2Mr5XZbdML1pCbdd+zxLTLDekDsRFiXUv8YhBRLCD+YbYeQ
+jnbm8s+Rrdqy3q/eayZW2WdvQMKLpNRvk0+vhuskVniHvqFP+KomWvu4nAkkgoa1
+ctJ1LcIi5PBaHccMF2cZmTc8XVFeNlGb1EoKa45IfAAOg0F0wZgQsyAikhI7PMHA
+UogXpcUyKkt4k4OuEhGlSBFLiXn+nijUqZgi6PmwQJYPpfPFzdNh9cF6KHDYONRR
+wI/NyEvD3+iH5ErZnlb/6U9xqvolFjdaMrfN3dPOzoDnNomd1Ybab4hX2dMREp2e
++Yt5RpdQan1XncSrD2/hKcZHtCk1N48RdvLjNrf0k70R7Cab1weFE8EJPQdpYOns
+2q8hpXPfF5pquP2ajFtnUUQ/OAov0Sf4eDvXAikhvs6BKWCrP9yjALcCcOtn113e
+A8vG+OgvqEmEZT9l4d3h2UsLQ7m+aH0oyWnAQKniPfcIni48Q1jjQUw21OEYclKp
+jPcfIBG19jvIysAxuTB5zVNoD3nIFS4/FVcaupHb9rPwElICnzMxDnliFOfiBMOy
+JVQVR+W1gzpxX0TaYtR8
+=d/RR
+-----END PGP SIGNATURE-----
