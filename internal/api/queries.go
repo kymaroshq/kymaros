@@ -36,7 +36,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-const kymarosNamespace = "kymaros-system"
+// kymarosNamespace is the namespace where RestoreTests and RestoreReports live.
+// It defaults to "kymaros-system" but can be overridden by the POD_NAMESPACE env
+// var, which is set automatically by the Kubernetes downward API in the Helm chart.
+var kymarosNamespace = detectNamespace()
+
+func detectNamespace() string {
+	if ns := os.Getenv("POD_NAMESPACE"); ns != "" {
+		return ns
+	}
+	if data, err := os.ReadFile("/var/run/secrets/kubernetes.io/serviceaccount/namespace"); err == nil {
+		if ns := strings.TrimSpace(string(data)); ns != "" {
+			return ns
+		}
+	}
+	return "kymaros-system"
+}
 
 // Queries provides access to Kymaros CRDs for the REST API.
 type Queries struct {

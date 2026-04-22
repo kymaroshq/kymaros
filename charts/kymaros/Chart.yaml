@@ -2,8 +2,8 @@ apiVersion: v2
 name: kymaros
 description: Kubernetes operator that validates backup restorability continuously — automated restore testing with scoring, health checks, and SLA compliance tracking.
 type: application
-version: 0.6.8
-appVersion: "0.6.8"
+version: 0.6.9
+appVersion: "0.6.9"
 home: https://kymaros.io
 sources:
   - https://github.com/kymaroshq/kymaros
@@ -33,6 +33,7 @@ annotations:
     fingerprint: 2FBF225C052F2603E7D2F062F5E10C1897987022
     url: https://kymaros.io/kymaros-gpg.pub
   artifacthub.io/containsSecurityUpdates: "true"
+  artifacthub.io/prerelease: "false"
   artifacthub.io/links: |
     - name: Documentation
       url: https://docs.kymaros.io
@@ -44,9 +45,5 @@ annotations:
     - title: Report Detail
       url: https://kymaros.io/screenshots/report-detail.png
   artifacthub.io/changes: |
-    - kind: added
-      description: Plugin architecture — public extension points for adapters, notifiers, and API routes
-    - kind: added
-      description: 5 real-world examples (WordPress, PostgreSQL HA, Redis Sentinel, microservices, DORA compliance)
-    - kind: changed
-      description: Extract main() into importable pkg/app.Run() for external modules
+    - kind: security
+      description: Bump github.com/moby/spdystream v0.5.0 to v0.5.1 (CVE-2026-35469)

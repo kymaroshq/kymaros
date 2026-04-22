@@ -2,6 +2,12 @@
 
 All notable changes to Kymaros are documented in this file.
 
+## [0.6.9] - 2026-04-22
+
+### Security
+
+- Bump `github.com/moby/spdystream` v0.5.0 → v0.5.1 (CVE-2026-35469)
+
 ## [0.6.8] - 2026-04-19
 
 ### Added
